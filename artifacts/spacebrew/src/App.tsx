@@ -166,6 +166,11 @@ function Home() {
 
   return (
     <div className="site-shell" id="home">
+      <div className="offer-banner" role="note" data-testid="banner-new-customer-offer">
+        <span className="offer-label">NEW CUSTOMER PERK</span>
+        <strong>Take 10% off your first order</strong>
+        <a href="#shop" data-testid="link-offer-shop">Shop the beans <ArrowRight size={13} /></a>
+      </div>
       <div className="topline">Freshly roasted for wherever you’re headed next</div>
       <header className="nav-wrap">
         <nav className="nav" aria-label="Main navigation">
@@ -250,7 +255,7 @@ function Home() {
           <div className="section-inner">
             <div className="section-heading">
               <div><div className="eyebrow">Choose your companion</div><h2 id="shop-heading">The bean shelf</h2></div>
-              <p>Four carefully roasted sidekicks. Pick the one that feels like your kind of adventure.</p>
+              <p>Eight carefully roasted sidekicks. Pick the one that feels like your kind of adventure.</p>
             </div>
             <div className="product-grid">
               {products.map((product) => (
