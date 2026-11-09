@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowDownRight, ArrowRight, Bean, Heart, Leaf, Moon, ShoppingBag, Sparkles, X } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, Bean, Coffee, CupSoda, Filter, Heart, Leaf, Moon, Settings2, ShoppingBag, Sparkles, X } from 'lucide-react';
 
 type Product = {
   id: string;
@@ -8,6 +8,8 @@ type Product = {
   description: string;
   price: number;
   tone: string;
+  category: 'coffee' | 'gear';
+  visual?: 'mug' | 'tumbler' | 'grinder' | 'dripper';
 };
 
 const products: Product[] = [
@@ -18,6 +20,7 @@ const products: Product[] = [
     description: 'Dark chocolate, toasted hazelnut, a little midnight magic.',
     price: 18,
     tone: 'peach',
+    category: 'coffee',
   },
   {
     id: 'sunspell',
@@ -26,6 +29,7 @@ const products: Product[] = [
     description: 'Apricot jam and honey for first-light kind of mornings.',
     price: 19,
     tone: 'blue',
+    category: 'coffee',
   },
   {
     id: 'stardust',
@@ -34,6 +38,7 @@ const products: Product[] = [
     description: 'Soft cocoa and sweet orange. All the ritual, no rush.',
     price: 17,
     tone: 'yellow',
+    category: 'coffee',
   },
   {
     id: 'comet',
@@ -42,6 +47,7 @@ const products: Product[] = [
     description: 'Juicy berries and caramel with a bright little kick.',
     price: 20,
     tone: 'rose',
+    category: 'coffee',
   },
   {
     id: 'cloudberry',
@@ -50,6 +56,7 @@ const products: Product[] = [
     description: 'Sweet citrus, almond, and a soft golden finish.',
     price: 19,
     tone: 'yellow',
+    category: 'coffee',
   },
   {
     id: 'cinder',
@@ -58,6 +65,7 @@ const products: Product[] = [
     description: 'Brown sugar, warm spice, and a crackling cocoa note.',
     price: 18,
     tone: 'peach',
+    category: 'coffee',
   },
   {
     id: 'blue-hour',
@@ -66,6 +74,7 @@ const products: Product[] = [
     description: 'A syrupy double-shot blend with plum and dark caramel.',
     price: 21,
     tone: 'blue',
+    category: 'coffee',
   },
   {
     id: 'honey-orbit',
@@ -74,14 +83,55 @@ const products: Product[] = [
     description: 'Floral honey, ripe pear, and a mellow tea-like finish.',
     price: 20,
     tone: 'rose',
+    category: 'coffee',
+  },
+  {
+    id: 'moon-phase-mug',
+    name: 'Moon Phase Mug',
+    origin: 'HAND-THROWN CERAMIC',
+    description: 'A midnight-blue mug with a little gold moon inside.',
+    price: 18,
+    tone: 'blue',
+    category: 'gear',
+    visual: 'mug',
+  },
+  {
+    id: 'orbit-travel-cup',
+    name: 'Orbit Travel Cup',
+    origin: 'REUSABLE · DOUBLE-WALL',
+    description: 'A cozy, spill-resistant cup for coffee on the move.',
+    price: 26,
+    tone: 'rose',
+    category: 'gear',
+    visual: 'tumbler',
+  },
+  {
+    id: 'comet-hand-grinder',
+    name: 'Comet Hand Grinder',
+    origin: 'BURR GRINDER',
+    description: 'A compact hand grinder for fresh grounds anywhere.',
+    price: 44,
+    tone: 'peach',
+    category: 'gear',
+    visual: 'grinder',
+  },
+  {
+    id: 'stardust-pour-over',
+    name: 'Stardust Pour-Over Set',
+    origin: 'CERAMIC DRIPPER',
+    description: 'A slow-brew dripper and reusable filter for easy mornings.',
+    price: 32,
+    tone: 'yellow',
+    category: 'gear',
+    visual: 'dripper',
   },
 ];
 
 function Brand() {
   return (
-    <a className="brand" href="#home" aria-label="SpaceBrew home" data-testid="link-brand-home">
+    <a className="brand" href="#home" aria-label="Cosmic Beans home" data-testid="link-brand-home">
       <span className="brand-mark"><Bean size={22} strokeWidth={1.8} /></span>
-      <span className="brand-name">Space<span>Brew</span></span>
+      <span className="brand-name">Cosmic<span> Beans</span></span>
     </a>
   );
 }
@@ -109,7 +159,7 @@ function ProductCard({
 
   return (
     <article className="product-card" data-testid={`card-product-${product.id}`}>
-      <div className="product-visual" data-tone={product.tone} data-testid={`visual-product-${product.id}`}>
+      <div className="product-visual" data-tone={product.tone} data-category={product.category} data-testid={`visual-product-${product.id}`}>
         <button
           type="button"
           className={`favorite${favorite ? ' is-favorite' : ''}`}
@@ -120,12 +170,19 @@ function ProductCard({
         >
           <Heart size={17} fill={favorite ? 'currentColor' : 'none'} strokeWidth={1.8} />
         </button>
-        <div className="bag" aria-hidden="true">
-          <span className="bag-top" />
-          <span className="bag-orbit"><Sparkles size={17} strokeWidth={1.5} /></span>
-          <span className="bag-label">SPACE<br />BREW</span>
-          <span className="bag-caption">small batch<br />coffee beans</span>
-        </div>
+        {product.category === 'coffee' ? (
+          <div className="coffee-package" aria-hidden="true">
+            <img src="/cosmic-beans-pouch.png" alt="" className="coffee-package-image" />
+            <span className="coffee-package-brand">COSMIC<br />BEANS</span>
+          </div>
+        ) : (
+          <div className={`gear-art gear-${product.visual}`} aria-hidden="true">
+            {product.visual === 'mug' && <Coffee size={76} strokeWidth={1.35} />}
+            {product.visual === 'tumbler' && <CupSoda size={76} strokeWidth={1.35} />}
+            {product.visual === 'grinder' && <Settings2 size={76} strokeWidth={1.35} />}
+            {product.visual === 'dripper' && <Filter size={76} strokeWidth={1.35} />}
+          </div>
+        )}
         {quantity > 0 && <span className="cart-live" data-testid={`status-quantity-${product.id}`}>In your bag: {quantity}</span>}
       </div>
       <div className="product-info">
@@ -169,7 +226,7 @@ function Home() {
       <div className="offer-banner" role="note" data-testid="banner-new-customer-offer">
         <span className="offer-label">NEW CUSTOMER PERK</span>
         <strong>Take 10% off your first order</strong>
-        <a href="#shop" data-testid="link-offer-shop">Shop the beans <ArrowRight size={13} /></a>
+        <a href="#shop" data-testid="link-offer-shop">Explore the shop <ArrowRight size={13} /></a>
       </div>
       <div className="topline">Freshly roasted for wherever you’re headed next</div>
       <header className="nav-wrap">
@@ -221,7 +278,7 @@ function Home() {
                 <span className="empty-moon"><Moon size={24} /></span>
                 <strong>Your bag is taking a nap.</strong>
                 <span>Let’s find it something lovely.</span>
-                <a href="#shop" onClick={() => setCartOpen(false)} data-testid="link-cart-shop">Explore the beans <ArrowRight size={14} /></a>
+                <a href="#shop" onClick={() => setCartOpen(false)} data-testid="link-cart-shop">Explore the shop <ArrowRight size={14} /></a>
               </div>
             )}
           </aside>
@@ -254,8 +311,8 @@ function Home() {
         <section className="shop-section" id="shop" aria-labelledby="shop-heading">
           <div className="section-inner">
             <div className="section-heading">
-              <div><div className="eyebrow">Choose your companion</div><h2 id="shop-heading">The bean shelf</h2></div>
-              <p>Eight carefully roasted sidekicks. Pick the one that feels like your kind of adventure.</p>
+              <div><div className="eyebrow">Choose your companion</div><h2 id="shop-heading">The cosmic shelf</h2></div>
+              <p>Eight small-batch coffees and four brew-day companions, ready for your next little adventure.</p>
             </div>
             <div className="product-grid">
               {products.map((product) => (
@@ -281,7 +338,7 @@ function Home() {
           <div className="story-copy">
             <div className="eyebrow">A note from our tiny roastery</div>
             <h2 id="story-heading">Every great story starts with a good cup.</h2>
-            <p>SpaceBrew began with a well-loved kettle, a sky full of stars, and the belief that the everyday deserves a little wonder. We roast in small batches, source with care, and save you the first sip.</p>
+            <p>Cosmic Beans began with a well-loved kettle, a sky full of stars, and the belief that the everyday deserves a little wonder. We roast in small batches, source with care, and save you the first sip.</p>
             <a className="story-link" href="#shop" data-testid="link-story-shop">Find your first favorite <ArrowRight size={15} /></a>
           </div>
         </section>

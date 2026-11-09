@@ -193,17 +193,29 @@ button { font: inherit; }
 .product-visual[data-tone="blue"] { background: #2b3d4a; }
 .product-visual[data-tone="yellow"] { background: #4a432e; }
 .product-visual[data-tone="rose"] { background: #4a3437; }
-.bag {
-  position: relative; width: 118px; height: 153px; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; padding: 14px 9px;
-  clip-path: polygon(7% 0, 93% 0, 100% 100%, 0 100%); background: #dec99b;
-  color: #26384a; box-shadow: 8px 13px 17px rgba(0, 0, 0, .36); transform: rotate(-4deg);
+.coffee-package { position: relative; width: 82%; height: 96%; display: grid; place-items: center; }
+.coffee-package-image {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(8px 12px 13px rgba(0, 0, 0, .4));
 }
-.product-card:nth-child(even) .bag { transform: rotate(4deg); background: #d3ba89; }
-.bag-top { position: absolute; left: 10px; right: 10px; top: 10px; border-top: 2px dashed rgba(69,55,39,.35); }
-.bag-orbit { width: 35px; height: 35px; margin: 4px 0; border: 1px solid #bf7655; border-radius: 50%; display: grid; place-items: center; font: 16px var(--app-font-serif); }
-.bag-label { text-align: center; font: 700 13px/1 var(--app-font-serif); }
-.bag-caption { margin-top: 5px; text-align: center; font: 7px var(--app-font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.coffee-package-brand {
+  position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%);
+  color: #23354a; text-align: center; font: 800 11px/.96 var(--app-font-serif);
+  letter-spacing: .04em; text-shadow: 0 1px rgba(255, 255, 255, .28);
+}
+.gear-art {
+  position: relative; width: 148px; height: 154px; display: grid; place-items: center;
+  border-radius: 50%; color: #f1d7a4; background: rgba(18, 26, 34, .34);
+}
+.gear-art::before {
+  content: ''; position: absolute; inset: 12px; border: 1px solid rgba(241, 215, 164, .24);
+  border-radius: 50%;
+}
+.gear-art svg { position: relative; z-index: 1; filter: drop-shadow(4px 7px 7px rgba(0, 0, 0, .35)); }
+.gear-mug { color: #f2dfbe; }
+.gear-tumbler { color: #f0c4a9; }
+.gear-grinder { color: #d9bb8c; }
+.gear-dripper { color: #efdaa5; }
 .favorite {
   position: absolute; z-index: 2; top: 13px; right: 13px; width: 36px; height: 36px;
   display: grid; place-items: center; border: 1px solid rgba(42,54,61,.16); border-radius: 50%;
@@ -311,8 +323,9 @@ button { font: inherit; }
   .section-heading p { margin-top: 12px; }
   .product-grid { gap: 11px; }
   .product-visual { height: 170px; }
-  .bag { transform: scale(.82) rotate(-4deg); }
-  .product-card:nth-child(even) .bag { transform: scale(.82) rotate(4deg); }
+  .coffee-package { width: 88%; }
+  .coffee-package-brand { font-size: 9px; }
+  .gear-art { width: 120px; height: 126px; }
   .product-info { padding: 13px 11px 12px; }
   .product-name { font-size: 17px; }
   .product-desc { font-size: 10px; min-height: 47px; }
