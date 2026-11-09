@@ -1,5 +1,5 @@
-import CozyVillage from './components/cozy-village/CozyVillage';
+import CosmicVillage from './components/cosmic-village/CosmicVillage';
 
 export default function App() {
-  return <CozyVillage />;
+  return <CosmicVillage />;
 }

@@ -3,8 +3,8 @@ name: Cosmic Beans visual direction
 description: Project-specific guidance for storefront atmosphere and catalog imagery.
 ---
 
-Use real product photography for catalog items; do not replace disliked AI-looking product renders with more generated product renders. The storefront should feel cozy and anime-inspired, with a cute village wallpaper and gentle animation, while remaining dark rather than white.
+Keep the storefront midnight navy/blue with celestial details, a cozy hand-painted anime-storybook village at night, and an original medieval witchy roastery mascot. Coffee cards should show coordinated celestial pouches with readable roast names in real text and aligned actions; use real photography for the merchandise tools.
 
-**Why:** the user said the prior generated product visuals still looked AI-generated and asked for a cozy animated village atmosphere. They approved combining an illustrated village environment with real product photography.
+**Why:** the user repeatedly clarified that the forest-green redesign missed the intended midnight-blue celestial look and specifically asked for packaged coffee, an anime witch character, and a roast-specific espresso guide.
 
-**How to apply:** Choose real product photos for products, reserve generated art for decorative environments when appropriate, and preserve readable contrast across the dark, warm interface.
+**How to apply:** Preserve the original navy direction; keep generated artwork to the village/character, not merchandise tools, and make coffee package labels crisp DOM text.
