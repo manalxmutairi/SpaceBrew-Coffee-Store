@@ -43,6 +43,38 @@ const products: Product[] = [
     price: 20,
     tone: 'rose',
   },
+  {
+    id: 'cloudberry',
+    name: 'Cloudberry Daybreak',
+    origin: 'THE EARLY RISER',
+    description: 'Sweet citrus, almond, and a soft golden finish.',
+    price: 19,
+    tone: 'yellow',
+  },
+  {
+    id: 'cinder',
+    name: 'Cinder & Cinnamon',
+    origin: 'THE FIRESIDE',
+    description: 'Brown sugar, warm spice, and a crackling cocoa note.',
+    price: 18,
+    tone: 'peach',
+  },
+  {
+    id: 'blue-hour',
+    name: 'Blue Hour Espresso',
+    origin: 'THE NIGHT FLIGHT',
+    description: 'A syrupy double-shot blend with plum and dark caramel.',
+    price: 21,
+    tone: 'blue',
+  },
+  {
+    id: 'honey-orbit',
+    name: 'Honey Orbit',
+    origin: 'THE DAYDREAMER',
+    description: 'Floral honey, ripe pear, and a mellow tea-like finish.',
+    price: 20,
+    tone: 'rose',
+  },
 ];
 
 function Brand() {
