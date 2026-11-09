@@ -1,0 +1,1 @@
+- [Cosmic Beans visual direction](cosmic-beans-visual-direction.md) — use real product photos, avoid AI-looking renders, and keep the storefront cozy and village-inspired.
