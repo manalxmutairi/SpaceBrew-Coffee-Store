@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "SpaceBrew Coffee Store"
+description = "A cozy, anime-inspired storefront for SpaceBrew specialty coffee beans, with responsive product browsing, favorites, and a functional cart interaction."
+version = "1.0.0"
+id = "artifacts/spacebrew"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19918
+
+[services.development]
+run = "pnpm --filter @workspace/spacebrew run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/spacebrew", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/spacebrew/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19918"
+BASE_PATH = "/"

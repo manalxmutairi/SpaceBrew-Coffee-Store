@@ -1,0 +1,28 @@
+Act as an expert frontend developer and UI/UX designer. Build a complete, responsive single-page e-commerce website for a coffee bean brand.
+
+**1. Brand Identity (The Shop & Concept):**
+- Name: 'SpaceBrew' (or 'GhibliBeans').
+- Concept: Selling high-quality coffee beans to youth and anime fans.
+- Personality: Nostalgic, energetic, and cozy (3 words).
+- Visual Style: Modern, fun, youthful, heavily inspired by 90s Anime, Studio Ghibli, and Spacetoon aesthetics (magical, warm, and inviting).
+- Colors: Dark Blue (Primary) and Brown (Secondary/Accents). Use an off-white/cream background to make these colors pop.
+- Slogan: "Magical beans for your daily adventure!"
+- Typography: Playful yet highly readable (e.g., 'Nunito' or 'Fredoka').
+
+**2. Website Structure (Design Your Website):**
+- Navigation Bar: Logo on the left, links (Home, Shop, About) in the center, and a Cart icon with a counter on the right.
+- Hero Section: A prominent section with a cozy anime-style background placeholder, a welcoming headline, the slogan, and a clear 'Shop Now' CTA button.
+- Products Section: A responsive grid layout displaying various coffee beans.
+- Product Cards: Each card must include a placeholder image, product name, short description, price, a 'Favorite' heart icon, and an 'Add to Cart' CTA button.
+
+**3. UI/UX Requirements:**
+- Visual Hierarchy & Consistency: Ensure clear spacing (padding/margins) and consistent styling across all elements.
+- Customer Journey: Keep the user path simple (Enter -> Explore -> Choose -> Interact).
+- Responsive Design: Must be fully mobile-responsive using CSS Flexbox or Grid.
+
+**4. Interactions (Must include these 3 JavaScript/CSS interactions):**
+- Hover: Product cards should smoothly lift up and gain a deeper shadow when hovered over.
+- Click (Add to Cart): When 'Add to Cart' is clicked, change the button text to 'Added!' temporarily and increase the cart counter in the Navbar.
+- Toggle (Favorite): Clicking the heart icon on a product card should toggle its state (e.g., outline to filled) to simulate saving to favorites.
+
+Please provide clean, well-structured HTML, CSS, and JS code files to achieve this.
