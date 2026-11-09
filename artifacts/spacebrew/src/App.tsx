@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { ArrowDownRight, ArrowRight, Bean, Coffee, CupSoda, Filter, Heart, Leaf, Moon, Settings2, ShoppingBag, Sparkles, X } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, Bean, Heart, Leaf, Moon, ShoppingBag, Sparkles, X } from 'lucide-react';
 
-type Product = {
+type ProductBase = {
   id: string;
   name: string;
   origin: string;
   description: string;
   price: number;
   tone: string;
-  category: 'coffee' | 'gear';
-  visual?: 'mug' | 'tumbler' | 'grinder' | 'dripper';
 };
+
+type Product =
+  | (ProductBase & { category: 'coffee' })
+  | (ProductBase & { category: 'gear'; image: string });
+
+const formatKwd = (amount: number) => `KWD ${amount.toFixed(3)}`;
 
 const products: Product[] = [
   {
@@ -18,7 +22,7 @@ const products: Product[] = [
     name: 'Moonbeam Blend',
     origin: 'THE NIGHT OWL',
     description: 'Dark chocolate, toasted hazelnut, a little midnight magic.',
-    price: 18,
+    price: 5.500,
     tone: 'peach',
     category: 'coffee',
   },
@@ -27,7 +31,7 @@ const products: Product[] = [
     name: 'Sunspell Roast',
     origin: 'THE BRIGHT SIDE',
     description: 'Apricot jam and honey for first-light kind of mornings.',
-    price: 19,
+    price: 5.750,
     tone: 'blue',
     category: 'coffee',
   },
@@ -36,7 +40,7 @@ const products: Product[] = [
     name: 'Stardust Decaf',
     origin: 'THE SLOW SPELL',
     description: 'Soft cocoa and sweet orange. All the ritual, no rush.',
-    price: 17,
+    price: 5.250,
     tone: 'yellow',
     category: 'coffee',
   },
@@ -45,7 +49,7 @@ const products: Product[] = [
     name: 'Comet Chaser',
     origin: 'THE WANDERER',
     description: 'Juicy berries and caramel with a bright little kick.',
-    price: 20,
+    price: 6.000,
     tone: 'rose',
     category: 'coffee',
   },
@@ -54,7 +58,7 @@ const products: Product[] = [
     name: 'Cloudberry Daybreak',
     origin: 'THE EARLY RISER',
     description: 'Sweet citrus, almond, and a soft golden finish.',
-    price: 19,
+    price: 5.750,
     tone: 'yellow',
     category: 'coffee',
   },
@@ -63,7 +67,7 @@ const products: Product[] = [
     name: 'Cinder & Cinnamon',
     origin: 'THE FIRESIDE',
     description: 'Brown sugar, warm spice, and a crackling cocoa note.',
-    price: 18,
+    price: 5.500,
     tone: 'peach',
     category: 'coffee',
   },
@@ -72,7 +76,7 @@ const products: Product[] = [
     name: 'Blue Hour Espresso',
     origin: 'THE NIGHT FLIGHT',
     description: 'A syrupy double-shot blend with plum and dark caramel.',
-    price: 21,
+    price: 6.500,
     tone: 'blue',
     category: 'coffee',
   },
@@ -81,7 +85,7 @@ const products: Product[] = [
     name: 'Honey Orbit',
     origin: 'THE DAYDREAMER',
     description: 'Floral honey, ripe pear, and a mellow tea-like finish.',
-    price: 20,
+    price: 6.000,
     tone: 'rose',
     category: 'coffee',
   },
@@ -90,40 +94,40 @@ const products: Product[] = [
     name: 'Moon Phase Mug',
     origin: 'HAND-THROWN CERAMIC',
     description: 'A midnight-blue mug with a little gold moon inside.',
-    price: 18,
+    price: 5.500,
     tone: 'blue',
     category: 'gear',
-    visual: 'mug',
+    image: '/moon-phase-mug.png',
   },
   {
     id: 'orbit-travel-cup',
     name: 'Orbit Travel Cup',
     origin: 'REUSABLE · DOUBLE-WALL',
     description: 'A cozy, spill-resistant cup for coffee on the move.',
-    price: 26,
+    price: 8.000,
     tone: 'rose',
     category: 'gear',
-    visual: 'tumbler',
+    image: '/orbit-travel-cup.png',
   },
   {
     id: 'comet-hand-grinder',
     name: 'Comet Hand Grinder',
     origin: 'BURR GRINDER',
     description: 'A compact hand grinder for fresh grounds anywhere.',
-    price: 44,
+    price: 13.500,
     tone: 'peach',
     category: 'gear',
-    visual: 'grinder',
+    image: '/comet-hand-grinder.png',
   },
   {
     id: 'stardust-pour-over',
     name: 'Stardust Pour-Over Set',
     origin: 'CERAMIC DRIPPER',
     description: 'A slow-brew dripper and reusable filter for easy mornings.',
-    price: 32,
+    price: 10.000,
     tone: 'yellow',
     category: 'gear',
-    visual: 'dripper',
+    image: '/stardust-pour-over.png',
   },
 ];
 
@@ -176,12 +180,7 @@ function ProductCard({
             <span className="coffee-package-brand">COSMIC<br />BEANS</span>
           </div>
         ) : (
-          <div className={`gear-art gear-${product.visual}`} aria-hidden="true">
-            {product.visual === 'mug' && <Coffee size={76} strokeWidth={1.35} />}
-            {product.visual === 'tumbler' && <CupSoda size={76} strokeWidth={1.35} />}
-            {product.visual === 'grinder' && <Settings2 size={76} strokeWidth={1.35} />}
-            {product.visual === 'dripper' && <Filter size={76} strokeWidth={1.35} />}
-          </div>
+          <img src={product.image} alt={product.name} className="merch-image" />
         )}
         {quantity > 0 && <span className="cart-live" data-testid={`status-quantity-${product.id}`}>In your bag: {quantity}</span>}
       </div>
@@ -190,7 +189,7 @@ function ProductCard({
         <h3 className="product-name" data-testid={`text-product-name-${product.id}`}>{product.name}</h3>
         <p className="product-desc">{product.description}</p>
         <div className="product-bottom">
-          <span className="price" data-testid={`text-product-price-${product.id}`}>${product.price}.00</span>
+          <span className="price" data-testid={`text-product-price-${product.id}`}>{formatKwd(product.price)}</span>
           <button
             type="button"
             onClick={addItem}
@@ -266,11 +265,11 @@ function Home() {
                     <div className="cart-line" key={product.id} data-testid={`row-cart-${product.id}`}>
                       <span className={`cart-swatch ${product.tone}`} aria-hidden="true" />
                       <span className="cart-line-name">{product.name}<small>Qty {cart[product.id]}</small></span>
-                      <span className="cart-line-price">${(product.price * cart[product.id]).toFixed(2)}</span>
+                      <span className="cart-line-price">{formatKwd(product.price * cart[product.id])}</span>
                     </div>
                   ))}
                 </div>
-                <div className="cart-subtotal"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
+                <div className="cart-subtotal"><span>Subtotal</span><strong>{formatKwd(subtotal)}</strong></div>
                 <p className="cart-note">Just a little preview — checkout isn’t part of this adventure.</p>
               </>
             ) : (
