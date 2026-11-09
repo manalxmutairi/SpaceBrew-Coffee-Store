@@ -178,6 +178,8 @@ button { font: inherit; }
 
 .shop-section { padding: 95px 36px 104px; background: #17212b; }
 .section-inner { max-width: 1160px; margin: auto; }
+.catalog-section + .catalog-section { margin-top: 88px; }
+.merch-section { padding-top: 46px; border-top: 1px solid #39434a; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 35px; }
 .section-heading h2 { margin: 10px 0 0; font: 700 clamp(36px, 5vw, 54px)/1 var(--app-font-serif); letter-spacing: -.055em; }
 .section-heading p { max-width: 290px; margin: 0 0 3px; color: #c2b69f; font-size: 13px; line-height: 1.7; }
@@ -203,19 +205,14 @@ button { font: inherit; }
   color: #23354a; text-align: center; font: 800 11px/.96 var(--app-font-serif);
   letter-spacing: .04em; text-shadow: 0 1px rgba(255, 255, 255, .28);
 }
-.gear-art {
-  position: relative; width: 148px; height: 154px; display: grid; place-items: center;
-  border-radius: 50%; color: #f1d7a4; background: rgba(18, 26, 34, .34);
-}
-.gear-art::before {
-  content: ''; position: absolute; inset: 12px; border: 1px solid rgba(241, 215, 164, .24);
-  border-radius: 50%;
-}
-.gear-art svg { position: relative; z-index: 1; filter: drop-shadow(4px 7px 7px rgba(0, 0, 0, .35)); }
-.gear-mug { color: #f2dfbe; }
-.gear-tumbler { color: #f0c4a9; }
-.gear-grinder { color: #d9bb8c; }
-.gear-dripper { color: #efdaa5; }
+.coffee-package-brand small { display: block; margin-top: 3px; font: 600 5px/1.1 var(--app-font-sans); letter-spacing: .02em; }
+.product-visual[data-category="gear"]::before { display: none; }
+.merch-image { width: 86%; height: 90%; object-fit: contain; filter: drop-shadow(4px 12px 9px rgba(0,0,0,.34)); transition: transform .35s ease; }
+.product-card:hover .merch-image { transform: rotate(-2deg) translateY(-3px); }
+.merch-grid .product-visual[data-tone="peach"] { background: linear-gradient(145deg,#47372f,#6e4e3c); }
+.merch-grid .product-visual[data-tone="blue"] { background: linear-gradient(145deg,#253742,#374d57); }
+.merch-grid .product-visual[data-tone="yellow"] { background: linear-gradient(145deg,#403b2e,#5b5137); }
+.merch-grid .product-visual[data-tone="rose"] { background: linear-gradient(145deg,#443338,#5e4140); }
 .favorite {
   position: absolute; z-index: 2; top: 13px; right: 13px; width: 36px; height: 36px;
   display: grid; place-items: center; border: 1px solid rgba(42,54,61,.16); border-radius: 50%;
@@ -251,6 +248,20 @@ button { font: inherit; }
 .story-copy h2 { margin: 12px 0 17px; font: 700 clamp(36px, 4vw, 50px)/1.04 var(--app-font-serif); letter-spacing: -.05em; }
 .story-copy p { max-width: 450px; color: #c8bda8; font-size: 14px; line-height: 1.8; }
 .story-link { display: inline-flex; gap: 11px; align-items: center; margin-top: 12px; color: #e0a174; font-size: 12px; font-weight: 800; text-decoration: none; }
+.brew-guide { padding: 88px 36px; background: #101922; }
+.brew-guide-inner { max-width: 1160px; margin: auto; display: grid; grid-template-columns: .8fr 1.2fr; gap: 64px; align-items: start; }
+.brew-intro h2 { margin: 12px 0; font: 700 clamp(34px,4vw,48px)/1.05 var(--app-font-serif); letter-spacing: -.05em; }
+.brew-intro p { color: #c2b69f; font-size: 13px; line-height: 1.8; max-width: 390px; }
+.brew-recipe { border: 1px solid #39434a; border-radius: 8px; padding: 24px 28px; background: #17212b; }
+.brew-ratio { display: grid; gap: 5px; padding-bottom: 18px; border-bottom: 1px solid #39434a; }
+.brew-ratio span { color: #dfa071; font: 10px var(--app-font-mono); letter-spacing: .12em; }
+.brew-ratio strong { font: 700 20px var(--app-font-serif); }
+.brew-ratio small { color: #c2b69f; font-size: 11px; }
+.brew-recipe ol { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; margin: 20px 0 0; padding: 0; list-style: none; counter-reset: brew; }
+.brew-recipe li { display: grid; grid-template-columns: 27px 1fr; gap: 8px; counter-increment: brew; }
+.brew-recipe li::before { content: "0" counter(brew); color: #dfa071; font: 10px var(--app-font-mono); }
+.brew-recipe li b { font: 700 14px var(--app-font-serif); }
+.brew-recipe li span { grid-column: 2; color: #c2b69f; font-size: 11px; line-height: 1.55; }
 .promise-row { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 1050px; margin: auto; padding: 59px 30px; gap: 30px; background: #17212b; }
 .promise { text-align: center; }
 .promise-icon { width: 42px; height: 42px; display: grid; place-items: center; margin: 0 auto 14px; border-radius: 50%; color: #e0a174; background: #34342e; }
@@ -306,7 +317,7 @@ button { font: inherit; }
   .nav { min-height: 68px; padding: 0 18px; grid-template-columns: 1fr auto; }
   .brand-mark { width: 37px; height: 37px; }
   .brand-name { font-size: 19px; }
-  .nav-links { grid-row: 2; grid-column: 1 / -1; justify-content: center; gap: 35px; padding: 9px 0 13px; }
+  .nav-links { grid-row: 2; grid-column: 1 / -1; justify-content: center; gap: 18px; padding: 9px 0 13px; }
   .nav { padding-bottom: 0; }
   .nav-wrap .nav { display: flex; flex-wrap: wrap; justify-content: space-between; }
   .nav-links { width: 100%; order: 3; }
@@ -325,7 +336,12 @@ button { font: inherit; }
   .product-visual { height: 170px; }
   .coffee-package { width: 88%; }
   .coffee-package-brand { font-size: 9px; }
-  .gear-art { width: 120px; height: 126px; }
+  .merch-image { width: 90%; height: 92%; }
+  .catalog-section + .catalog-section { margin-top: 62px; }
+  .brew-guide { padding: 62px 22px; }
+  .brew-guide-inner { grid-template-columns: 1fr; gap: 24px; }
+  .brew-recipe { padding: 20px; }
+  .brew-recipe ol { gap: 15px; }
   .product-info { padding: 13px 11px 12px; }
   .product-name { font-size: 17px; }
   .product-desc { font-size: 10px; min-height: 47px; }

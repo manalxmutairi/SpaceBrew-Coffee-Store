@@ -97,7 +97,7 @@ const products: Product[] = [
     price: 5.500,
     tone: 'blue',
     category: 'gear',
-    image: '/moon-phase-mug.png',
+    image: '/moon-phase-mug.webp',
   },
   {
     id: 'orbit-travel-cup',
@@ -107,7 +107,7 @@ const products: Product[] = [
     price: 8.000,
     tone: 'rose',
     category: 'gear',
-    image: '/orbit-travel-cup.png',
+    image: '/orbit-travel-cup.webp',
   },
   {
     id: 'comet-hand-grinder',
@@ -117,7 +117,7 @@ const products: Product[] = [
     price: 13.500,
     tone: 'peach',
     category: 'gear',
-    image: '/comet-hand-grinder.png',
+    image: '/comet-hand-grinder.webp',
   },
   {
     id: 'stardust-pour-over',
@@ -127,7 +127,7 @@ const products: Product[] = [
     price: 10.000,
     tone: 'yellow',
     category: 'gear',
-    image: '/stardust-pour-over.png',
+    image: '/stardust-pour-over.webp',
   },
 ];
 
@@ -177,7 +177,7 @@ function ProductCard({
         {product.category === 'coffee' ? (
           <div className="coffee-package" aria-hidden="true">
             <img src="/cosmic-beans-pouch.png" alt="" className="coffee-package-image" />
-            <span className="coffee-package-brand">COSMIC<br />BEANS</span>
+            <span className="coffee-package-brand">COSMIC<br />BEANS<small>{product.name}</small></span>
           </div>
         ) : (
           <img src={product.image} alt={product.name} className="merch-image" />
@@ -233,7 +233,9 @@ function Home() {
           <Brand />
           <div className="nav-links">
             <a href="#home" data-testid="link-home">Home</a>
-            <a href="#shop" data-testid="link-shop">Shop</a>
+            <a href="#beans" data-testid="link-shop">Beans</a>
+            <a href="#merchandise" data-testid="link-merchandise">Merch</a>
+            <a href="#brew-guide" data-testid="link-brew-guide">Brew guide</a>
             <a href="#about" data-testid="link-about">Our story</a>
           </div>
           <button
@@ -290,7 +292,7 @@ function Home() {
             <div className="eyebrow">A little magic in every morning</div>
             <h1 id="hero-title">Magical beans for your <em>daily adventure!</em></h1>
             <p className="hero-lead">Small-batch coffee for big-hearted dreamers, late-night readers, and anyone with somewhere wonderful to be.</p>
-            <a className="hero-cta" href="#shop" data-testid="button-shop-now">Shop the beans <ArrowDownRight size={17} /></a>
+            <a className="hero-cta" href="#beans" data-testid="button-shop-now">Shop the beans <ArrowDownRight size={17} /></a>
             <div className="hero-note">ROASTED WITH CARE · SENT WITH A LITTLE STARDUST</div>
           </div>
           <div className="hero-art" aria-label="A cozy little coffee shop beneath a starry sky">
@@ -307,24 +309,37 @@ function Home() {
           </div>
         </div>
 
-        <section className="shop-section" id="shop" aria-labelledby="shop-heading">
+        <section className="shop-section" id="shop">
           <div className="section-inner">
-            <div className="section-heading">
-              <div><div className="eyebrow">Choose your companion</div><h2 id="shop-heading">The cosmic shelf</h2></div>
-              <p>Eight small-batch coffees and four brew-day companions, ready for your next little adventure.</p>
-            </div>
-            <div className="product-grid">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  favorite={favorites.includes(product.id)}
-                  quantity={cart[product.id] ?? 0}
-                  onFavorite={() => toggleFavorite(product.id)}
-                  onAdd={() => addToCart(product.id)}
-                />
-              ))}
-            </div>
+            <section className="catalog-section" id="beans" aria-labelledby="beans-heading">
+              <div className="section-heading">
+                <div><div className="eyebrow">Fresh from the roastery</div><h2 id="beans-heading">Coffee beans</h2></div>
+                <p>Eight small-batch roasts. Find your favorite cup, from bright and fruity to deep and cozy.</p>
+              </div>
+              <div className="product-grid">
+                {products.filter((product) => product.category === 'coffee').map((product) => (
+                  <ProductCard key={product.id} product={product} favorite={favorites.includes(product.id)} quantity={cart[product.id] ?? 0} onFavorite={() => toggleFavorite(product.id)} onAdd={() => addToCart(product.id)} />
+                ))}
+              </div>
+            </section>
+            <section className="catalog-section merch-section" id="merchandise" aria-labelledby="merch-heading">
+              <div className="section-heading">
+                <div><div className="eyebrow">Tools for the ritual</div><h2 id="merch-heading">Merchandise</h2></div>
+                <p>Thoughtful, celestial brew tools made to earn a place on your counter.</p>
+              </div>
+              <div className="product-grid merch-grid">
+                {products.filter((product) => product.category === 'gear').map((product) => (
+                  <ProductCard key={product.id} product={product} favorite={favorites.includes(product.id)} quantity={cart[product.id] ?? 0} onFavorite={() => toggleFavorite(product.id)} onAdd={() => addToCart(product.id)} />
+                ))}
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section className="brew-guide" id="brew-guide" aria-labelledby="brew-heading">
+          <div className="brew-guide-inner">
+            <div className="brew-intro"><div className="eyebrow">A little brew note</div><h2 id="brew-heading">A better cup, one pour at a time.</h2><p>A simple pour-over recipe for any Cosmic Beans roast. Adjust the grind finer for more body, coarser for a lighter cup.</p></div>
+            <div className="brew-recipe"><div className="brew-ratio"><span>ONE CUP</span><strong>15g coffee · 250g water</strong><small>Medium grind · 93°C · about 3 minutes</small></div><ol><li><b>Rinse</b><span>Warm your dripper and filter, then discard the rinse water.</span></li><li><b>Bloom</b><span>Add grounds and pour 40g water. Wait 30 seconds.</span></li><li><b>Pour</b><span>Slowly pour in circles to 250g total, keeping the bed level.</span></li><li><b>Enjoy</b><span>Let it finish dripping, swirl, and serve while warm.</span></li></ol></div>
           </div>
         </section>
 
