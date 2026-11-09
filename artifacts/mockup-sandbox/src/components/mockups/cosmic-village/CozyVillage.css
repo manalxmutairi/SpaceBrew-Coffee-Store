@@ -1,8 +1,8 @@
 .cozy-village {
   --ink: #292b26;
   --night: #252d2b;
-  --paper: #e9ddc5;
-  --paper-deep: #d9c9aa;
+  --paper: #2c382f;
+  --paper-deep: #354137;
   --cream: #f3e9d4;
   --gold: #e1a96f;
   --rust: #a85d42;
@@ -10,7 +10,7 @@
   min-height: 100dvh;
   overflow: hidden;
   background: var(--paper);
-  color: var(--ink);
+  color: var(--cream);
   font-family: 'Nunito', sans-serif;
 }
 .cozy-village a { color: inherit; text-decoration: none; }
@@ -67,7 +67,7 @@
 .cloud-a { top:20%; left:51%; animation:v-cloud 36s ease-in-out infinite alternate; }.cloud-b { top:32%; left:67%; width:130px; opacity:.65; animation:v-cloud 43s ease-in-out infinite alternate-reverse; }
 .v-ribbon { display:flex; align-items:center; justify-content:space-around; gap:28px; overflow:hidden; min-height:47px; color:#f0dfc2; background:#9a6247; white-space:nowrap; font:9px 'DM Mono',monospace; letter-spacing:.13em; }
 .v-ribbon i { color:#efbd83; font-style:normal; font-size:14px; }
-.v-shop { position:relative; padding:105px max(calc((100vw - 1190px)/2),5.5%) 105px; background:#e9ddc5; }
+.v-shop { position:relative; padding:105px max(calc((100vw - 1190px)/2),5.5%) 105px; background:#2c382f; }
 .v-section-intro { position:relative; display:grid; grid-template-columns:1fr .7fr auto; align-items:end; gap:40px; margin-bottom:47px; }
 .v-overline { color:#986248; font-size:9px; }
 .v-section-intro h2,.v-merch-head h2 { margin:13px 0 0; color:#30372f; font:700 clamp(40px,5vw,62px)/.99 'Fraunces',serif; letter-spacing:-.06em; }
@@ -76,7 +76,7 @@
 .v-count-stamp { width:87px; height:87px; display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px solid #b58864; border-radius:50%; color:#79533d; transform:rotate(8deg); }
 .v-count-stamp span { font:25px 'Fraunces',serif; }.v-count-stamp small { font:7px/1.5 'DM Mono',monospace; text-align:center; letter-spacing:.1em; }
 .v-products { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:27px 19px; }
-.v-product { overflow:hidden; background:#f1e7d3; border:1px solid #d1c0a2; box-shadow:0 5px 15px #50442c12; transition:transform .25s,box-shadow .25s; }
+.v-product { overflow:hidden; background:#354137; border:1px solid #59624f; box-shadow:0 5px 15px #101b1933; transition:transform .25s,box-shadow .25s; }
 .v-product:hover { transform:translateY(-5px); box-shadow:0 13px 26px #50442c24; }
 .v-product-image { position:relative; height:228px; overflow:hidden; background:#c4ad8b; }
 .v-product-image::after { content:""; position:absolute; inset:55% 0 0; background:linear-gradient(0deg,#1f241b73,transparent); pointer-events:none; }
@@ -164,6 +164,20 @@
  .v-story { grid-template-columns:1fr; gap:40px; padding:66px 25px 70px; }.v-story-image { min-height:300px; box-shadow:7px 8px 0 #9b7553; }.v-story-copy h2 { font-size:43px; }.v-story-copy>p { font-size:11px; }
  .v-promises { grid-template-columns:1fr; gap:23px; padding:42px 24px; }.promise-title { margin-bottom:4px; }.promise-title h2 { font-size:27px; }.v-promise p { max-width:none; }.v-footer { padding:30px 20px 15px; }.v-footer-top { flex-wrap:wrap; }.v-footer-top p { font-size:13px; }.v-footer-base { gap:12px; font-size:7px; }.v-cart { right:10px; }
 }
+.v-section-intro h2,.v-merch-head h2,.v-product-copy h3,.v-product-footer strong { color:#f1e6cf; }
+.v-section-intro h2 em,.v-merch-head h2 em,.v-story-copy h2 em,.promise-title em { color:#dca675; }
+.v-section-intro>p,.v-merch-head>p,.v-product-copy p { color:#c9c5af; }
+.v-overline,.v-product-origin { color:#d7a77c; }
+.v-count-stamp { color:#dfb887; border-color:#9b9475; }
+.v-merch-section { border-color:#64715c; }
+.v-add { color:#26372d; background:#ddb180; }
+.v-add:hover { color:#fff0d6; background:#a75f43; }
+.v-story { background:#3a483b; }
+.v-story-copy h2,.promise-title h2,.v-promise h3 { color:#f0e5cd; }
+.v-story-copy>p,.v-promise p { color:#c9c7b1; }
+.v-story-copy>a,.v-signoff { color:#e1b58a; }
+.v-promises { background:#303d32; border-color:#5a684f; }
+.v-promise .promise-icon { color:#e0b388; background:#48543c; }
 @media(prefers-reduced-motion:reduce) {
  .cozy-village *, .cozy-village *::before, .cozy-village *::after { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
 }

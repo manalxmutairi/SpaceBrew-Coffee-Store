@@ -9,9 +9,9 @@ type Product = {
 };
 const coffeePhotos = [
   { image: '/__mockup/images/cozy/beans-open.webp', imageAlt: 'Glossy roasted coffee beans spilling from an open burlap sack' },
-  { image: '/__mockup/images/cozy/beans-open.webp', imageAlt: 'A close crop of whole roasted coffee beans beside burlap' },
-  { image: '/__mockup/images/cozy/beans-open.webp', imageAlt: 'A fresh roast spilling across a pale counter' },
-  { image: '/__mockup/images/cozy/beans-open.webp', imageAlt: 'Dark roasted coffee beans in a rustic jute sack' },
+  { image: '/__mockup/images/cozy/beans-macro.webp', imageAlt: 'A real close-up photograph of richly roasted Arabica coffee beans' },
+  { image: '/__mockup/images/cozy/beans-sunlight.webp', imageAlt: 'Roasted coffee beans photographed in warm natural sunlight' },
+  { image: '/__mockup/images/cozy/beans-scoop.webp', imageAlt: 'A scoop of whole coffee beans beside a rustic coffee sack' },
 ];
 const products: Product[] = [
   { id: 'moonbeam', name: 'Moonbeam Blend', origin: 'THE NIGHT OWL', description: 'Dark chocolate, toasted hazelnut, a little midnight magic.', price: 5.500, ...coffeePhotos[0], category: 'coffee' },
@@ -23,7 +23,7 @@ const products: Product[] = [
   { id: 'blue-hour', name: 'Blue Hour Espresso', origin: 'THE NIGHT FLIGHT', description: 'A syrupy double-shot blend with plum and dark caramel.', price: 6.500, ...coffeePhotos[2], category: 'coffee' },
   { id: 'honey-orbit', name: 'Honey Orbit', origin: 'THE DAYDREAMER', description: 'Floral honey, ripe pear, and a mellow tea-like finish.', price: 6.000, ...coffeePhotos[3], category: 'coffee' },
   { id: 'moon-phase-mug', name: 'Moon Phase Mug', origin: 'CERAMIC COFFEE CUP', description: 'A simple white ceramic cup, ready for your slow morning pour.', price: 5.500, image: '/__mockup/images/cozy/mug-photo.webp', imageAlt: 'A plain white ceramic coffee cup on a warm wooden table', category: 'gear' },
-  { id: 'orbit-travel-cup', name: 'Orbit Travel Cup', origin: 'TAKEAWAY CUP', description: 'A white reusable-style cup with a black lid for coffee on the move.', price: 8.000, image: '/__mockup/images/cozy/travel-photo.webp', imageAlt: 'A blank white takeaway coffee cup with a black lid', category: 'gear' },
+  { id: 'orbit-travel-cup', name: 'Orbit Travel Cup', origin: 'LIDDED COFFEE CUP', description: 'A simple lidded cup for taking your favorite roast on the move.', price: 8.000, image: '/__mockup/images/cozy/travel-photo.webp', imageAlt: 'A blank white takeaway coffee cup with a black lid', category: 'gear' },
   { id: 'comet-hand-grinder', name: 'Comet Hand Grinder', origin: 'MANUAL COFFEE GRINDER', description: 'A classic hand-crank grinder with a wooden catch drawer.', price: 13.500, image: '/__mockup/images/cozy/grinder-photo.webp', imageAlt: 'A vintage-style wooden hand coffee grinder with crank', category: 'gear' },
   { id: 'stardust-pour-over', name: 'Stardust Pour-Over Set', origin: 'GLASS COFFEE BREWER', description: 'A glass pour-over brewer photographed mid-brew, steam and all.', price: 10.000, image: '/__mockup/images/cozy/pour-over-photo.webp', imageAlt: 'A glass pour-over coffee brewer releasing steam', category: 'gear' },
 ];
