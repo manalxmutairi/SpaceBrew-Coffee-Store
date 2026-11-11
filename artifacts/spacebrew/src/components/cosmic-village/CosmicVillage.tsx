@@ -1,5 +1,8 @@
-import { useState } from 'react';
-import { ArrowDownRight, ArrowLeft, ArrowRight, Bean, Heart, Leaf, Moon, ShoppingBag, Sparkles, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowDownRight, ArrowLeft, ArrowRight, Bean, Heart, Leaf, Moon, ShoppingBag, Sparkles, UserRound, X } from 'lucide-react';
+import type { User } from '@supabase/supabase-js';
+import AccountDialog from './AccountDialog';
+import { supabase } from '@/lib/supabase';
 
 type ProductBase = {
   id: string;
@@ -99,9 +102,25 @@ function CosmicVillage() {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartOpen, setCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const cartCount = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
   const cartProducts = products.filter((product) => cart[product.id]);
   const subtotal = cartProducts.reduce((sum, product) => sum + product.price * cart[product.id], 0);
+  useEffect(() => {
+    let active = true;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setUser(session?.user ?? null);
+    });
+    void supabase.auth.getSession().then(({ data, error }) => {
+      if (error) console.error('Could not restore the customer session.', error);
+      if (active) setUser(data.session?.user ?? null);
+    });
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
   const toggleFavorite = (id: string) => setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   const addToCart = (id: string) => setCart((current) => ({ ...current, [id]: (current[id] ?? 0) + 1 }));
   const closeMenu = () => setMenuOpen(false);
@@ -113,6 +132,7 @@ function CosmicVillage() {
       <button type="button" className="menu-toggle" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} data-testid="button-menu-toggle"><span /><span /></button>
       <div className={`nav-links${menuOpen ? ' is-open' : ''}`}>
         <a href="#home" onClick={closeMenu} data-testid="link-home">Home</a><a href="#beans" onClick={closeMenu} data-testid="link-shop">Coffee</a><a href="#merchandise" onClick={closeMenu} data-testid="link-merchandise">Merch</a><a href="#brew-guide" onClick={closeMenu} data-testid="link-brew-guide">Espresso notes</a><a href="#about" onClick={closeMenu} data-testid="link-about">Our story</a>
+        <button type="button" className="nav-account-link" onClick={() => { closeMenu(); setAccountOpen(true); }} data-testid="button-account-open"><UserRound size={14} /><span>{user ? 'My account' : 'Sign up'}</span></button>
       </div>
       <button type="button" className="cart-button" onClick={() => setCartOpen((open) => !open)} aria-expanded={cartOpen} aria-controls="cart-panel" data-testid="button-cart"><ShoppingBag size={17} /><span>Bag</span><span className="cart-count" data-testid="text-cart-count" aria-live="polite">{cartCount}</span></button>
       <span className="cart-live" aria-live="polite" data-testid="status-cart-live">{cartCount === 1 ? '1 item in your bag' : `${cartCount} items in your bag`}</span>
@@ -137,6 +157,7 @@ function CosmicVillage() {
       <section className="promise-row" aria-label="Our promises"><div className="promise"><span className="promise-icon"><Sparkles size={19} /></span><h3>Roasted in small batches</h3><p>Fresh little lots, never forgotten at the back of a warehouse.</p></div><div className="promise"><span className="promise-icon"><Leaf size={19} /></span><h3>Thoughtful from the start</h3><p>Good relationships with the people and places behind every bean.</p></div><div className="promise"><span className="promise-icon"><Moon size={19} /></span><h3>Made for your ritual</h3><p>For sunrise plans, rainy pages, and one more chapter nights.</p></div></section>
     </main>
     <footer className="footer"><div className="footer-inner"><Brand /><span className="footer-note">Magical beans for your daily adventure · Kuwait</span><a className="footer-top" href="#home" data-testid="link-back-to-top">Back to the stars</a></div></footer>
+     <AccountDialog open={accountOpen} onOpenChange={setAccountOpen} user={user} />
   </div>;
 }
 
