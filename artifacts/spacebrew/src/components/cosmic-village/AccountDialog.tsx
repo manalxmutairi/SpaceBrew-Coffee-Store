@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { ArrowRight, Bean, LoaderCircle, LogOut, Moon } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import {
@@ -9,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { supabase } from '@/lib/supabase';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 type AccountDialogProps = {
   open: boolean;
@@ -22,20 +24,30 @@ export default function AccountDialog({
   user,
 }: AccountDialogProps) {
   const [mode, setMode] = useState<'signup' | 'signin'>('signup');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const form = useForm<{ email: string; password: string }>({
+    defaultValues: { email: '', password: '' },
+  });
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  useEffect(() => {
+    if (!open) {
+      form.setValue('password', '');
+      setNotice('');
+      setErrorMessage('');
+    }
+  }, [open, form]);
+
   const changeMode = (nextMode: 'signup' | 'signin') => {
     setMode(nextMode);
+    form.clearErrors();
+    form.setValue('password', '');
     setNotice('');
     setErrorMessage('');
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async ({ email, password }: { email: string; password: string }) => {
     setBusy(true);
     setNotice('');
     setErrorMessage('');
@@ -48,7 +60,7 @@ export default function AccountDialog({
         });
         if (error) throw error;
 
-        setPassword('');
+        form.setValue('password', '');
         if (!data.session) {
           setNotice('Check your inbox for a confirmation link to finish creating your account.');
         } else {
@@ -60,7 +72,7 @@ export default function AccountDialog({
           password,
         });
         if (error) throw error;
-        setPassword('');
+        form.setValue('password', '');
         onOpenChange(false);
       }
     } catch (error) {
@@ -162,35 +174,22 @@ export default function AccountDialog({
               </button>
             </div>
 
-            <form className="account-form" onSubmit={handleSubmit}>
-              <label className="account-field">
-                <span>Email address</span>
-                <input
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  autoComplete="email"
-                  maxLength={254}
-                  required
-                  placeholder="you@example.com"
-                  data-testid="input-account-email"
-                />
-              </label>
-              <label className="account-field">
-                <span>Password</span>
-                <input
-                  type="password"
-                  name="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
-                  minLength={8}
-                  required
-                  placeholder="At least 8 characters"
-                  data-testid="input-account-password"
-                />
-              </label>
+            <Form {...form}>
+            <form className="account-form" onSubmit={form.handleSubmit(handleSubmit)}>
+              <FormField control={form.control} name="email" rules={{ required: 'Enter your email address.', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address.' } }} render={({ field }) => (
+                <FormItem className="account-field">
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl><input {...field} type="email" autoComplete="email" maxLength={254} required placeholder="you@example.com" disabled={busy} data-testid="input-account-email" /></FormControl>
+                  <FormMessage className="account-field-error" />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="password" rules={{ required: 'Enter your password.', minLength: { value: mode === 'signup' ? 8 : 1, message: 'Use at least 8 characters.' } }} render={({ field }) => (
+                <FormItem className="account-field">
+                  <FormLabel>Password</FormLabel>
+                  <FormControl><input {...field} type="password" autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} minLength={mode === 'signup' ? 8 : 1} required placeholder={mode === 'signup' ? 'At least 8 characters' : 'Your password'} disabled={busy} data-testid="input-account-password" /></FormControl>
+                  <FormMessage className="account-field-error" />
+                </FormItem>
+              )} />
               {notice && <p className="account-notice" role="status" data-testid="status-account-notice">{notice}</p>}
               {errorMessage && <p className="account-error" role="alert">{errorMessage}</p>}
               <button
@@ -209,6 +208,7 @@ export default function AccountDialog({
                 Your password is handled securely by Supabase. Email confirmation may be required before your first sign-in.
               </p>
             </form>
+            </Form>
           </>
         )}
       </DialogContent>

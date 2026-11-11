@@ -140,6 +140,7 @@ button, a { -webkit-tap-highlight-color: transparent; } button { font: inherit; 
 .account-field { display: grid; gap: 7px; color: #dec591; font: 9px var(--app-font-mono); letter-spacing: .08em; text-transform: uppercase; }
 .account-field input { box-sizing: border-box; width: 100%; min-height: 45px; padding: 0 13px; border: 1px solid #455572; border-radius: 4px; outline: 0; background: #101a30; color: #f4ead7; font: 12px var(--app-font-sans); letter-spacing: 0; text-transform: none; }
 .account-field input::placeholder { color: #7f8da7; }.account-field input:focus { border-color: #dfba78; box-shadow: 0 0 0 3px rgba(223,186,120,.12); }
+.account-field-error { margin: 0; color: #ffd1c7 !important; font: 11px/1.5 var(--app-font-sans); letter-spacing: 0; text-transform: none; }
 .account-submit { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; margin-top: 2px; padding: 0 15px; border: 1px solid #e6c481; border-radius: 4px; background: #dfb873; color: #16213b; font-size: 11px; font-weight: 900; cursor: pointer; transition: background .18s,transform .18s; }
 .account-submit:hover:not(:disabled) { transform: translateY(-1px); background: #efcc8d; }.account-submit:disabled { cursor: wait; opacity: .72; }
 .account-spinner { animation: account-spin 1s linear infinite; }
