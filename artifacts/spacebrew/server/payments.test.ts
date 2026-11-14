@@ -3,6 +3,7 @@ import { after, before, test } from 'node:test';
 import type { Server } from 'node:http';
 import app from '../api/payments';
 import { catalog, priceLookupKey, validateCart } from './catalog';
+import { databaseTls, formatDatabaseUrl } from './database-config';
 
 let server: Server;
 let base: string;
@@ -32,6 +33,30 @@ test('KWD catalog preserves three-decimal values and stable lookup keys', () => 
   assert.equal(catalog.length, 12);
   assert.equal(catalog.find((p) => p.id === 'sunspell')?.amount, 5750);
   assert.equal(priceLookupKey('moonbeam'), 'cosmic_moonbeam_kwd_test_v1');
+});
+test('a copied database URI accepts a separate password with reserved characters', () => {
+  const password = 'example @:/?#%[]+ password';
+  const formatted = formatDatabaseUrl('postgresql://postgres.example:[YOUR-PASSWORD]@pooler.example.com:5432/postgres', password);
+  const parsed = new URL(formatted);
+  assert.equal(decodeURIComponent(parsed.password), password);
+  assert.equal(parsed.hostname, 'pooler.example.com');
+  assert.equal(parsed.port, '5432');
+});
+test('a complete database URI keeps its existing encoded password when no separate password is supplied', () => {
+  const formatted = formatDatabaseUrl('postgresql://postgres:example%40password@pooler.example.com:5432/postgres');
+  assert.equal(new URL(formatted).password, 'example%40password');
+});
+test('invalid database URLs and unresolved password placeholders fail without exposing the input', () => {
+  for (const value of ['not-a-uri', 'https://example.com/private', 'postgresql://postgres:[YOUR-PASSWORD]@pooler.example.com:5432/postgres']) {
+    assert.throws(() => formatDatabaseUrl(value), (error: Error) => !error.message.includes(value));
+  }
+});
+test('connection-string options cannot disable the explicit verified TLS configuration', () => {
+  const formatted = formatDatabaseUrl('postgresql://postgres:example@pooler.example.com/postgres?sslmode=disable&ssl=false');
+  assert.equal(new URL(formatted).searchParams.has('sslmode'), false);
+  assert.equal(new URL(formatted).searchParams.has('ssl'), false);
+  assert.equal(databaseTls.rejectUnauthorized, true);
+  assert.ok(databaseTls.ca.startsWith('-----BEGIN CERTIFICATE-----'));
 });
 test('browser price and currency fields never override server prices', () => {
   const result = validateCart([{ id: 'moonbeam', quantity: 2, amount: 1, currency: 'usd' }]);

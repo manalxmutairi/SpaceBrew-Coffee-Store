@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 import pg from 'pg';
 import { runMigrations, StripeSync } from 'stripe-replit-sync';
+import { databaseTls, formatDatabaseUrl } from './database-config';
 
 export class ConfigurationError extends Error {}
 
@@ -20,9 +21,18 @@ export function getStripeClient() {
 }
 
 let pool: pg.Pool | undefined;
+export function getDatabaseUrl() {
+  try {
+    return formatDatabaseUrl(requiredSetting('SUPABASE_DATABASE_URL'), process.env.SUPABASE_DATABASE_PASSWORD);
+  } catch {
+    throw new ConfigurationError('The secure Supabase database settings need to be checked.');
+  }
+}
+
 export function getPool() {
   return pool ??= new pg.Pool({
-    connectionString: requiredSetting('SUPABASE_DATABASE_URL'),
+    connectionString: getDatabaseUrl(),
+    ssl: databaseTls,
     max: 2,
     connectionTimeoutMillis: 8000,
     idleTimeoutMillis: 10000,
@@ -42,11 +52,11 @@ export function getStripeSync() {
   if (!ready) {
     ready = (async () => {
       getStripeClient();
-      const databaseUrl = requiredSetting('SUPABASE_DATABASE_URL');
+      const databaseUrl = getDatabaseUrl();
       const siteUrl = getSiteUrl();
-      await runMigrations({ databaseUrl });
+      await runMigrations({ databaseUrl, ssl: databaseTls });
       const sync = new StripeSync({
-        poolConfig: { connectionString: databaseUrl, max: 2, connectionTimeoutMillis: 8000 },
+        poolConfig: { connectionString: databaseUrl, ssl: databaseTls, max: 2, connectionTimeoutMillis: 8000 },
         stripeSecretKey: requiredSetting('STRIPE_SECRET_KEY'),
         stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? '',
       });

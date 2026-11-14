@@ -35,7 +35,8 @@ environment-variable settings for each target environment, then rebuild:
 | Name | Source | Browser-visible? |
 | --- | --- | --- |
 | `STRIPE_SECRET_KEY` | A newly rotated **test** key from the merchant's Stripe account | Never |
-| `SUPABASE_DATABASE_URL` | Existing Supabase project's Connect → Session pooler URL, with database password | Never |
+| `SUPABASE_DATABASE_URL` | Existing Supabase project's Connect → Session pooler URL, copied unchanged | Never |
+| `SUPABASE_DATABASE_PASSWORD` | Database password, entered separately; the server safely encodes it into the copied URL | Never |
 | `SITE_URL` | Actual HTTPS storefront origin, without a trailing path | Public origin |
 | `VITE_SUPABASE_URL` | Existing Supabase project URL | Yes |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Existing Supabase public/publishable key | Yes |
@@ -44,8 +45,10 @@ Do not prefix a secret with `VITE_`. Do not commit secret values, paste them in
 chat, or put them in `vercel.json`. The Stripe publishable key is not needed for
 Stripe-hosted Checkout. No Supabase service-role key is required.
 
-The Supabase connection must support TLS with certificate verification. Use the
-provider's recommended session-pooler settings; never disable certificate checks.
+The server safely inserts the separate database password and uses Supabase's
+published root CA with certificate and hostname verification for database access,
+Stripe migrations and sync. The copied URI's SSL flags cannot disable this
+protection. Never disable certificate checks to bypass a connection error.
 
 ## Activation sequence
 
