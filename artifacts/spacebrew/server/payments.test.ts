@@ -4,6 +4,7 @@ import type { Server } from 'node:http';
 import app from '../api/payments';
 import { catalog, priceLookupKey, validateCart } from './catalog';
 import { databaseTls, formatDatabaseUrl } from './database-config';
+import { formatStripeAmount, kwdFilsToUsdCents } from '../src/lib/checkout-pricing';
 
 let server: Server;
 let base: string;
@@ -33,7 +34,20 @@ after(async () => {
 test('KWD catalog preserves three-decimal values and stable lookup keys', () => {
   assert.equal(catalog.length, 12);
   assert.equal(catalog.find((p) => p.id === 'sunspell')?.amount, 5750);
-  assert.equal(priceLookupKey('moonbeam'), 'cosmic_moonbeam_kwd_test_v1');
+  assert.equal(priceLookupKey('moonbeam'), 'cosmic_moonbeam_usd_325_test_v1');
+});
+test('approved conversion rounds each KWD unit into USD cents consistently', () => {
+  assert.equal(kwdFilsToUsdCents(5500), 1788);
+  assert.equal(kwdFilsToUsdCents(13500), 4388);
+  assert.equal(kwdFilsToUsdCents(5750), 1869);
+  assert.equal(kwdFilsToUsdCents(1000), 325);
+  assert.equal(kwdFilsToUsdCents(5500) * 2, 3576);
+  assert.throws(() => kwdFilsToUsdCents(-1));
+  assert.throws(() => kwdFilsToUsdCents(1.5));
+});
+test('order history formats USD cents and KWD fils using the correct decimal places', () => {
+  assert.equal(formatStripeAmount(1788, 'usd'), 'US$17.88');
+  assert.equal(formatStripeAmount(5500, 'kwd'), 'KWD 5.500');
 });
 test('a copied database URI accepts a separate password with reserved characters', () => {
   const password = 'example @:/?#%[]+ password';
@@ -76,14 +90,14 @@ test('invalid, unknown, repeated, negative, fractional and oversized items are r
 });
 test('readiness is false with missing credentials and reveals no values', async () => {
   const response = await fetch(`${base}/config`);
-  assert.deepEqual(await response.json(), { configured: false, paused: false, testMode: true });
+  assert.deepEqual(await response.json(), { configured: false, paused: false, testMode: true, currency: 'usd', usdPerKwd: 3.25 });
   assert.equal(response.headers.get('cache-control'), 'no-store');
 });
 test('paused checkout blocks requests before authentication, database or Stripe access', async () => {
   process.env.CHECKOUT_ENABLED = 'false';
   try {
     const config = await fetch(`${base}/config`);
-    assert.deepEqual(await config.json(), { configured: false, paused: true, testMode: true });
+    assert.deepEqual(await config.json(), { configured: false, paused: true, testMode: true, currency: 'usd', usdPerKwd: 3.25 });
     const response = await fetch(`${base}/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     assert.equal(response.status, 503);
     assert.equal((await response.json()).error, 'Checkout is paused. You can keep browsing and your bag is saved.');

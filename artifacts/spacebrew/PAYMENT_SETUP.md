@@ -1,9 +1,10 @@
 # Cosmic Beans test checkout
 
-**User decision: keep KWD and pause checkout.** Checkout is disabled by default
-and explicitly paused with `CHECKOUT_ENABLED=false`. Do not reactivate it as part
-of routine setup or verification. A later user request and a KWD-capable Stripe
-account are required before setting `CHECKOUT_ENABLED=true`.
+**Approved currency policy:** Display KWD in the shop and charge USD in test
+checkout at a fixed shop rate of **1 KWD = US$3.25**. This is not a live market
+rate. Convert each unit to USD cents and round before multiplying by quantity.
+Show the USD subtotal and rate before payment. The user has approved resuming
+test checkout under this policy; live payments remain prohibited by the code.
 
 The storefront stays usable when payment credentials are absent. Checkout must
 remain in test mode until a merchant account, fulfillment, shipping fees and
@@ -13,7 +14,7 @@ policies have been finalized.
 
 - Vercel Node function at `/api/payments`, separate from the static Vite build.
 - Verified Supabase authentication before checkout or order access.
-- Server-controlled catalog, KWD amounts in fils, quantity limits, and checkout
+- Server-controlled catalog, KWD display amounts converted to USD cents, quantity limits, and checkout
   idempotency.
 - Stripe-hosted test checkout, Kuwait address collection and eligible first-order
   discount.
@@ -25,12 +26,17 @@ policies have been finalized.
 
 ## Current blockers
 
-The connected Replit Stripe test sandbox rejected KWD prices. One Moonbeam Blend
-test product was created, but no prices or checkout sessions were created. Do not
-silently substitute USD or any other currency.
+The Stripe account rejected KWD prices, so the user approved USD test checkout
+at the fixed rate above. The 12 USD test prices, 10% coupon, signed webhook
+configuration and Supabase Stripe synchronization have now been prepared.
+A temporary test session confirmed a Moonbeam Blend subtotal of US$17.88 and a
+discounted total of US$16.09, then was expired without payment.
+Never change the fixed rate or checkout currency without user approval.
 
 The Vercel host also needs the server settings below. A Replit connector does not
-automatically provide credentials to Vercel.
+automatically provide credentials to Vercel. The provided public Vercel URL
+currently returns the storefront HTML at the payment API route; deploy the new
+Node function and configure Vercel before attempting an end-to-end payment.
 
 ## Vercel environment variables
 
@@ -43,6 +49,7 @@ environment-variable settings for each target environment, then rebuild:
 | `SUPABASE_DATABASE_URL` | Existing Supabase project's Connect → Session pooler URL, copied unchanged | Never |
 | `SUPABASE_DATABASE_PASSWORD` | Database password, entered separately; the server safely encodes it into the copied URL | Never |
 | `SITE_URL` | Actual HTTPS storefront origin, without a trailing path | Public origin |
+| `CHECKOUT_ENABLED` | Set to `true` only for configured, verified test checkout | No secret |
 | `VITE_SUPABASE_URL` | Existing Supabase project URL | Yes |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Existing Supabase public/publishable key | Yes |
 
@@ -58,11 +65,11 @@ protection. Never disable certificate checks to bypass a connection error.
 ## Activation sequence
 
 1. Rotate the Stripe secret that was shared in chat.
-2. Select a Stripe test account that supports KWD. The connected sandbox's currency
-   rejection must be resolved in Stripe; the application cannot enable it.
+2. Use the same verified Stripe test account for catalog setup and the Vercel
+   backend. USD is the approved checkout currency.
 3. Run `pnpm --filter @workspace/spacebrew run setup:payments` in a secure server
    environment containing the settings below. It idempotently creates the 12
-   products and KWD prices, the 10% first-order coupon, then initializes migrations,
+   products and USD prices, the 10% first-order coupon, then initializes migrations,
    the signed webhook and sync. It does not print keys or connection strings.
 4. Confirm the setup command succeeded against the same test account used by the
    Vercel backend. Do not create prices in one account and use a key from another.

@@ -2,6 +2,7 @@ import express, { type Request, type Response, type NextFunction } from 'express
 import { createClient } from '@supabase/supabase-js';
 import { ConfigurationError, getPool, getSiteUrl, getStripeClient, getStripeSync, requiredSetting } from '../server/stripe';
 import { priceLookupKey, validateCart } from '../server/catalog';
+import { CHECKOUT_CURRENCY, kwdFilsToUsdCents, USD_PER_KWD } from '../src/lib/checkout-pricing';
 
 const app = express();
 app.disable('x-powered-by');
@@ -34,7 +35,7 @@ function failed(res: Response, error: unknown) {
 app.get('/api/payments/config', (_req, res) => {
   const names = ['STRIPE_SECRET_KEY', 'SUPABASE_DATABASE_URL', 'SITE_URL', 'VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY'];
   const paused = process.env.CHECKOUT_ENABLED !== 'true';
-  res.json({ configured: !paused && names.every((name) => Boolean(process.env[name])), paused, testMode: true });
+  res.json({ configured: !paused && names.every((name) => Boolean(process.env[name])), paused, testMode: true, currency: CHECKOUT_CURRENCY, usdPerKwd: USD_PER_KWD });
 });
 
 // Raw bytes are required for Stripe signature verification; keep before JSON.
@@ -81,7 +82,8 @@ app.post('/api/payments/checkout', async (req, res): Promise<void> => {
     const db = getPool();
     const stripe = getStripeClient();
     // Prices come only from the synced Stripe catalog, checked against the
-    // server catalog. KWD uses three decimal places: KWD 5.500 = 5500 fils.
+    // server catalog. KWD is displayed in the shop; Stripe charges USD cents
+    // at the approved fixed rate, rounded per unit.
     const lines: { price: string; quantity: number }[] = [];
     for (const item of items) {
       const prices = await db.query(
@@ -89,7 +91,7 @@ app.post('/api/payments/checkout', async (req, res): Promise<void> => {
          WHERE lookup_key = $1 AND active = true LIMIT 1`, [priceLookupKey(item.id)],
       );
       const price = prices.rows[0];
-      if (!price || Number(price.unit_amount) !== item.amount || price.currency !== 'kwd') {
+      if (!price || Number(price.unit_amount) !== kwdFilsToUsdCents(item.amount) || price.currency !== CHECKOUT_CURRENCY) {
         throw new ConfigurationError('The test product catalog needs setup before checkout.');
       }
       lines.push({ price: price.id, quantity: item.quantity });
@@ -122,7 +124,7 @@ app.post('/api/payments/checkout', async (req, res): Promise<void> => {
       billing_address_collection: 'required',
       success_url: `${getSiteUrl()}/?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${getSiteUrl()}/?checkout=cancelled`,
-      metadata: { supabase_user_id: user.id, shop: 'cosmic-beans' },
+      metadata: { supabase_user_id: user.id, shop: 'cosmic-beans', source_currency: 'kwd', usd_per_kwd: String(USD_PER_KWD) },
       ...(firstOrder ? { discounts: [{ coupon: 'cosmic_first_order_test_v1' }] } : {}),
     }, { idempotencyKey: `cosmic-checkout-${user.id}-${requestId}` });
     await db.query(

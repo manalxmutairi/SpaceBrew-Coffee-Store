@@ -4,6 +4,7 @@ import type { User } from '@supabase/supabase-js';
 import AccountDialog from './AccountDialog';
 import { supabase } from '@/lib/supabase';
 import { CheckoutButton, PaymentReturn } from './Checkout';
+import { kwdFilsToUsdCents } from '@/lib/checkout-pricing';
 
 type ProductBase = {
   id: string;
@@ -114,6 +115,7 @@ function CosmicVillage() {
   const cartCount = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
   const cartProducts = products.filter((product) => cart[product.id]);
   const subtotal = cartProducts.reduce((sum, product) => sum + product.price * cart[product.id], 0);
+  const usdSubtotalCents = cartProducts.reduce((sum, product) => sum + kwdFilsToUsdCents(Math.round(product.price * 1000)) * cart[product.id], 0);
   useEffect(() => { try { localStorage.setItem('cosmic-bag', JSON.stringify(cart)); } catch { /* Keep the in-memory bag if browser storage is full. */ } }, [cart]);
   const confirmPayment = (sessionId: string) => {
     try {
@@ -157,7 +159,7 @@ function CosmicVillage() {
     </nav>
     {cartOpen && <aside className="cart-panel" id="cart-panel" aria-label="Your shopping bag" data-testid="panel-cart">
       <div className="cart-panel-head"><div><span className="product-tag">YOUR LITTLE STASH</span><h2>Your bag</h2></div><button type="button" className="cart-close" onClick={() => setCartOpen(false)} aria-label="Close bag" data-testid="button-close-cart"><X size={18} /></button></div>
-      {cartProducts.length ? <><div className="cart-lines">{cartProducts.map((product) => <div className="cart-line" key={product.id} data-testid={`row-cart-${product.id}`}><span className={`cart-swatch ${product.tone}`} /><span className="cart-line-name">{product.name}<small>Qty {cart[product.id]} · <button type="button" aria-label={`Remove ${product.name} from bag`} onClick={() => setCart((current) => { const next = { ...current }; delete next[product.id]; return next; })}>Remove</button></small></span><span className="cart-line-price">{formatKwd(product.price * cart[product.id])}</span></div>)}</div><div className="cart-subtotal"><span>Subtotal</span><strong>{formatKwd(subtotal)}</strong></div><CheckoutButton cart={cart} user={user} onSignIn={() => setAccountOpen(true)} /></> : <div className="cart-empty"><span className="empty-moon"><Moon size={23} /></span><strong>Your bag is taking a nap.</strong><span>Let’s find it something lovely.</span><a href="#shop" onClick={() => setCartOpen(false)} data-testid="link-cart-shop">Explore the shop <ArrowRight size={14} /></a></div>}
+      {cartProducts.length ? <><div className="cart-lines">{cartProducts.map((product) => <div className="cart-line" key={product.id} data-testid={`row-cart-${product.id}`}><span className={`cart-swatch ${product.tone}`} /><span className="cart-line-name">{product.name}<small>Qty {cart[product.id]} · <button type="button" aria-label={`Remove ${product.name} from bag`} onClick={() => setCart((current) => { const next = { ...current }; delete next[product.id]; return next; })}>Remove</button></small></span><span className="cart-line-price">{formatKwd(product.price * cart[product.id])}</span></div>)}</div><div className="cart-subtotal"><span>Subtotal</span><strong>{formatKwd(subtotal)}</strong></div><CheckoutButton cart={cart} user={user} onSignIn={() => setAccountOpen(true)} usdSubtotalCents={usdSubtotalCents} /></> : <div className="cart-empty"><span className="empty-moon"><Moon size={23} /></span><strong>Your bag is taking a nap.</strong><span>Let’s find it something lovely.</span><a href="#shop" onClick={() => setCartOpen(false)} data-testid="link-cart-shop">Explore the shop <ArrowRight size={14} /></a></div>}
     </aside>}
     </header>
     <main>

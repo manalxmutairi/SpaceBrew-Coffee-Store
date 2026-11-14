@@ -1,3 +1,5 @@
+import { CHECKOUT_PRICE_VERSION } from '../src/lib/checkout-pricing';
+
 // Server-owned prices: never accept an amount or currency from the browser.
 export const catalog = [
   { id: 'moonbeam', name: 'Moonbeam Blend', amount: 5500 },
@@ -14,7 +16,7 @@ export const catalog = [
   { id: 'stardust-pour-over', name: 'Stardust Pour-Over Set', amount: 10000 },
 ] as const;
 
-export const priceLookupKey = (id: string) => `cosmic_${id}_kwd_test_v1`;
+export const priceLookupKey = (id: string) => `cosmic_${id}_${CHECKOUT_PRICE_VERSION}`;
 
 export function validateCart(input: unknown) {
   if (!Array.isArray(input) || input.length < 1 || input.length > catalog.length) {

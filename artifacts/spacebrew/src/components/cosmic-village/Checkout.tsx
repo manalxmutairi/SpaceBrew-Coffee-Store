@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import { formatStripeAmount, USD_PER_KWD } from '@/lib/checkout-pricing';
 
 const apiPath = (path: string) => `${import.meta.env.BASE_URL}api/payments/${path}`;
 
@@ -20,18 +21,21 @@ async function authenticatedRequest(path: string, options: RequestInit = {}) {
   return body;
 }
 
-export function CheckoutButton({ cart, user, onSignIn }: {
-  cart: Record<string, number>; user: User | null; onSignIn: () => void;
+export function CheckoutButton({ cart, user, onSignIn, usdSubtotalCents }: {
+  cart: Record<string, number>; user: User | null; onSignIn: () => void; usdSubtotalCents: number;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [available, setAvailable] = useState<boolean | null>(null);
+  const [paused, setPaused] = useState(false);
   const request = useRef<{ cart: string; id: string } | null>(null);
   useEffect(() => {
     let active = true;
     void fetch(apiPath('config')).then(async (response) => {
       if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) return false;
-      return (await response.json()).configured === true;
+      const data = await response.json();
+      if (active) setPaused(data.paused === true);
+      return data.configured === true;
     }).then((configured) => { if (active) setAvailable(configured); })
       .catch(() => { if (active) setAvailable(false); });
     return () => { active = false; };
@@ -57,9 +61,10 @@ export function CheckoutButton({ cart, user, onSignIn }: {
     } finally { setBusy(false); }
   };
   return <div className="checkout-controls">
-    <p className="cart-note">All prices remain in KWD. No payments are being accepted while checkout is paused.</p>
+    <div className="cart-subtotal" data-testid="checkout-usd-subtotal"><span>USD checkout subtotal</span><strong>{formatStripeAmount(usdSubtotalCents, 'usd')}</strong></div>
+    <p className="cart-note">Checkout currency: <strong>USD</strong> · Fixed shop rate: 1 KWD = US${USD_PER_KWD.toFixed(2)}. Each item is rounded to cents. Eligible first orders receive 10% off on the Stripe payment page. This is test checkout; no real money is charged.</p>
     <button className="account-submit" type="button" disabled={busy || available !== true} onClick={startCheckout} data-testid="button-checkout">
-      {available === null ? 'Checking checkout availability…' : available === false ? 'Checkout paused' : busy ? 'Opening secure checkout…' : user ? 'Continue to test checkout' : 'Sign in to checkout'}
+      {available === null ? 'Checking checkout availability…' : available === false ? paused ? 'Checkout paused' : 'Test checkout setup pending' : busy ? 'Opening secure checkout…' : user ? 'Continue to test checkout' : 'Sign in to checkout'}
     </button>
     {available === false && <p className="cart-note" role="status">You can keep browsing and adding items. Your bag will stay saved.</p>}
     {error && <p className="account-error" role="alert">{error}</p>}
@@ -119,7 +124,7 @@ export function CustomerOrders() {
     {message && <p role="status">{message}</p>}
     {orders.map((order) => <div className="customer-order" key={order.id}>
       <span>{new Date(order.created_at).toLocaleDateString()} · {order.payment_status === 'paid' ? 'Paid' : 'Awaiting confirmation'}</span>
-      {order.amount_total !== null && <strong>{order.currency?.toUpperCase()} {(Number(order.amount_total) / 1000).toFixed(3)}</strong>}
+      {order.amount_total !== null && order.currency && <strong>{formatStripeAmount(Number(order.amount_total), order.currency)}</strong>}
     </div>)}
   </section>;
 }
