@@ -5,18 +5,12 @@ import { defineConfig } from 'vite';
 
 import runtimeErrorOverlay from '@replit/vite-plugin-runtime-error-modal';
 
-export default defineConfig(async ({ command }) => {
+export default defineConfig(async () => {
 const rawPort = process.env.PORT;
 
-if (command === 'serve' && !rawPort) {
-  throw new Error(
-    'PORT environment variable is required but was not provided.',
-  );
-}
+const port = rawPort ? Number(rawPort) : 5173;
 
-const port = rawPort ? Number(rawPort) : undefined;
-
-if (port !== undefined && (!Number.isInteger(port) || port <= 0 || port > 65535)) {
+if (!Number.isInteger(port) || port <= 0 || port > 65535) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
