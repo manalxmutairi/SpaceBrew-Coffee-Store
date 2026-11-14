@@ -1,2 +1,3 @@
 - [Cosmic Beans visual direction](cosmic-beans-visual-direction.md) — use real product photos, avoid AI-looking renders, and keep the storefront cozy and village-inspired.
 - [Customer account provider](customer-account-provider.md) — reuse the existing Supabase Auth setup for customer accounts rather than introducing Clerk.
+- [Payment hosting and currency](payment-hosting.md) — use Vercel with existing Supabase, preserve KWD, and verify Stripe account currency support before activation.

@@ -3,6 +3,14 @@
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
 
+.payment-return { margin: 1rem auto; padding: 1.2rem; max-width: 1100px; background: #182641; color: #f4e8c9; border: 1px solid #c6a567; border-radius: 12px; }
+.payment-return p, .customer-orders p { font-size: .85rem; line-height: 1.5; }
+.payment-return button { margin-right: 1rem; color: #e1bd7b; text-decoration: underline; }
+.customer-orders { max-height: 180px; overflow: auto; padding: .75rem 0; }
+.customer-orders h3 { font-size: .9rem; color: #e1bd7b; }
+.customer-order { display: flex; justify-content: space-between; gap: .75rem; padding: .75rem 0; font-size: .75rem; border-bottom: 1px solid #ffffff18; }
+.checkout-controls .account-submit { width: 100%; }
+.cart-line-name button { color: #d8b674; text-decoration: underline; }
 @custom-variant dark (&:is(.dark *));
 @theme inline {
   --color-background: hsl(var(--background)); --color-foreground: hsl(var(--foreground));

@@ -3,6 +3,7 @@ import { ArrowDownRight, ArrowLeft, ArrowRight, Bean, Heart, Leaf, Moon, Shoppin
 import type { User } from '@supabase/supabase-js';
 import AccountDialog from './AccountDialog';
 import { supabase } from '@/lib/supabase';
+import { CheckoutButton, PaymentReturn } from './Checkout';
 
 type ProductBase = {
   id: string;
@@ -99,7 +100,13 @@ function RecipeBooklet() {
 
 function CosmicVillage() {
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [cart, setCart] = useState<Record<string, number>>({});
+  const [cart, setCart] = useState<Record<string, number>>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('cosmic-bag') ?? '{}');
+      if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return {};
+      return Object.fromEntries(products.filter((p) => Number.isInteger(saved[p.id]) && saved[p.id] > 0 && saved[p.id] <= 10).map((p) => [p.id, saved[p.id]]));
+    } catch { return {}; }
+  });
   const [cartOpen, setCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -107,6 +114,16 @@ function CosmicVillage() {
   const cartCount = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
   const cartProducts = products.filter((product) => cart[product.id]);
   const subtotal = cartProducts.reduce((sum, product) => sum + product.price * cart[product.id], 0);
+  useEffect(() => { try { localStorage.setItem('cosmic-bag', JSON.stringify(cart)); } catch { /* Keep the in-memory bag if browser storage is full. */ } }, [cart]);
+  const confirmPayment = (sessionId: string) => {
+    try {
+      const key = `cosmic-checkout-${sessionId}`;
+      const purchased = JSON.parse(localStorage.getItem(key) ?? 'null');
+      if (!purchased) return;
+      setCart((current) => Object.fromEntries(Object.entries(current).map(([id, count]) => [id, Math.max(0, count - (Number(purchased[id]) || 0))]).filter(([, count]) => Number(count) > 0)));
+      localStorage.removeItem(key);
+    } catch { /* Never clear a bag when the original checkout cannot be recovered. */ }
+  };
   useEffect(() => {
     if (!supabase) return;
     let active = true;
@@ -123,7 +140,7 @@ function CosmicVillage() {
     };
   }, []);
   const toggleFavorite = (id: string) => setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
-  const addToCart = (id: string) => setCart((current) => ({ ...current, [id]: (current[id] ?? 0) + 1 }));
+  const addToCart = (id: string) => setCart((current) => ({ ...current, [id]: Math.min(10, (current[id] ?? 0) + 1) }));
   const closeMenu = () => setMenuOpen(false);
   return <div className="site-shell" id="home">
     <div className="offer-banner" role="note" data-testid="banner-new-customer-offer"><span className="offer-label">A FIRST VISIT GIFT</span><strong>Take 10% off your first order</strong><a href="#shop" data-testid="link-offer-shop">Find your roast <ArrowRight size={13} /></a></div>
@@ -140,10 +157,11 @@ function CosmicVillage() {
     </nav>
     {cartOpen && <aside className="cart-panel" id="cart-panel" aria-label="Your shopping bag" data-testid="panel-cart">
       <div className="cart-panel-head"><div><span className="product-tag">YOUR LITTLE STASH</span><h2>Your bag</h2></div><button type="button" className="cart-close" onClick={() => setCartOpen(false)} aria-label="Close bag" data-testid="button-close-cart"><X size={18} /></button></div>
-      {cartProducts.length ? <><div className="cart-lines">{cartProducts.map((product) => <div className="cart-line" key={product.id} data-testid={`row-cart-${product.id}`}><span className={`cart-swatch ${product.tone}`} /><span className="cart-line-name">{product.name}<small>Qty {cart[product.id]}</small></span><span className="cart-line-price">{formatKwd(product.price * cart[product.id])}</span></div>)}</div><div className="cart-subtotal"><span>Subtotal</span><strong>{formatKwd(subtotal)}</strong></div><p className="cart-note"><strong>Checkout preview — not available.</strong> This little bag is just a storefront demo.</p></> : <div className="cart-empty"><span className="empty-moon"><Moon size={23} /></span><strong>Your bag is taking a nap.</strong><span>Let’s find it something lovely.</span><a href="#shop" onClick={() => setCartOpen(false)} data-testid="link-cart-shop">Explore the shop <ArrowRight size={14} /></a></div>}
+      {cartProducts.length ? <><div className="cart-lines">{cartProducts.map((product) => <div className="cart-line" key={product.id} data-testid={`row-cart-${product.id}`}><span className={`cart-swatch ${product.tone}`} /><span className="cart-line-name">{product.name}<small>Qty {cart[product.id]} · <button type="button" aria-label={`Remove ${product.name} from bag`} onClick={() => setCart((current) => { const next = { ...current }; delete next[product.id]; return next; })}>Remove</button></small></span><span className="cart-line-price">{formatKwd(product.price * cart[product.id])}</span></div>)}</div><div className="cart-subtotal"><span>Subtotal</span><strong>{formatKwd(subtotal)}</strong></div><CheckoutButton cart={cart} user={user} onSignIn={() => setAccountOpen(true)} /></> : <div className="cart-empty"><span className="empty-moon"><Moon size={23} /></span><strong>Your bag is taking a nap.</strong><span>Let’s find it something lovely.</span><a href="#shop" onClick={() => setCartOpen(false)} data-testid="link-cart-shop">Explore the shop <ArrowRight size={14} /></a></div>}
     </aside>}
     </header>
     <main>
+      <PaymentReturn user={user} onSignIn={() => setAccountOpen(true)} onPaid={confirmPayment} />
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-copy"><div className="eyebrow">A tiny roastery for dreamers</div><h1 id="hero-title">A little <em>moonlight</em> in your morning.</h1><p className="hero-lead">Small-batch coffee for home espresso brewers, late-night readers, and anyone who likes their everyday with a little wonder.</p><a className="hero-cta" href="#beans" data-testid="button-shop-now">Meet the beans <ArrowDownRight size={17} /></a><div className="hero-note"><span>ROASTED IN SMALL LOTS</span><i /> SENT WITH STARDUST</div></div>
         <div className="hero-art"><img className="hero-village" src="/cosmic-midnight-village.webp" alt="A hand-painted village of warm café windows beneath a deep blue starry sky" data-testid="img-hero" /><div className="hero-shade" /><img className="hero-mascot" src="/luma-witch-mascot.webp" alt="Luma, Cosmic Beans' original roastery witch, in her star-embroidered cloak and pointed hat" data-testid="img-luma" /><span className="hero-spark one"><Sparkles size={20} /></span><span className="hero-spark two"><Sparkles size={15} /></span><div className="hero-stamp"><span>THE VILLAGE<br />IS OPEN</span><Moon size={17} /></div><div className="luma-card"><span>YOUR ROASTING GUIDE</span><strong>Meet Luma</strong><small>She saved you a seat.</small></div><div className="hero-caption"><span>01 / 04</span> Somewhere between the stars and home</div></div>

@@ -3,7 +3,16 @@
   "framework": "vite",
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist/public",
+  "functions": {
+    "api/payments.ts": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/payments/:path*",
+      "destination": "/api/payments"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

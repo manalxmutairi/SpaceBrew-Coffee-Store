@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { supabase, accountConfigurationError } from '@/lib/supabase';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { CustomerOrders } from './Checkout';
 
 type AccountDialogProps = {
   open: boolean;
@@ -130,6 +131,7 @@ export default function AccountDialog({
               <span>ACCOUNT EMAIL</span>
               <strong>{user.email}</strong>
             </div>
+            <CustomerOrders />
             {errorMessage && <p className="account-error" role="alert">{errorMessage}</p>}
             <button
               type="button"
