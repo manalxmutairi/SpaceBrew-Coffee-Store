@@ -57,11 +57,11 @@ export function CheckoutButton({ cart, user, onSignIn }: {
     } finally { setBusy(false); }
   };
   return <div className="checkout-controls">
-    <p className="cart-note">Stripe test checkout · no real payments.<br />Eligible first orders receive 10% off at checkout. Kuwait delivery addresses only; no delivery fee is added in this test.</p>
+    <p className="cart-note">All prices remain in KWD. No payments are being accepted while checkout is paused.</p>
     <button className="account-submit" type="button" disabled={busy || available !== true} onClick={startCheckout} data-testid="button-checkout">
-      {available === null ? 'Checking checkout availability…' : available === false ? 'Test checkout setup pending' : busy ? 'Opening secure checkout…' : user ? 'Continue to test checkout' : 'Sign in to checkout'}
+      {available === null ? 'Checking checkout availability…' : available === false ? 'Checkout paused' : busy ? 'Opening secure checkout…' : user ? 'Continue to test checkout' : 'Sign in to checkout'}
     </button>
-    {available === false && <p className="cart-note" role="status">Payments are not enabled on this host yet. You can keep browsing and your bag will be saved.</p>}
+    {available === false && <p className="cart-note" role="status">You can keep browsing and adding items. Your bag will stay saved.</p>}
     {error && <p className="account-error" role="alert">{error}</p>}
   </div>;
 }

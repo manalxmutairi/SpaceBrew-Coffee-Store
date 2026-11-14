@@ -9,11 +9,12 @@ let server: Server;
 let base: string;
 const saved = new Map<string, string | undefined>();
 before(async () => {
-  for (const key of ['STRIPE_SECRET_KEY', 'SUPABASE_DATABASE_URL', 'SITE_URL']) {
+  for (const key of ['STRIPE_SECRET_KEY', 'SUPABASE_DATABASE_URL', 'SITE_URL', 'CHECKOUT_ENABLED']) {
     saved.set(key, process.env[key]);
     delete process.env[key];
   }
   process.env.SITE_URL = 'https://shop.example';
+  process.env.CHECKOUT_ENABLED = 'true';
   await new Promise<void>((resolve, reject) => {
     server = app.listen(0, '127.0.0.1', (error) => error ? reject(error) : resolve());
   });
@@ -75,8 +76,18 @@ test('invalid, unknown, repeated, negative, fractional and oversized items are r
 });
 test('readiness is false with missing credentials and reveals no values', async () => {
   const response = await fetch(`${base}/config`);
-  assert.deepEqual(await response.json(), { configured: false, testMode: true });
+  assert.deepEqual(await response.json(), { configured: false, paused: false, testMode: true });
   assert.equal(response.headers.get('cache-control'), 'no-store');
+});
+test('paused checkout blocks requests before authentication, database or Stripe access', async () => {
+  process.env.CHECKOUT_ENABLED = 'false';
+  try {
+    const config = await fetch(`${base}/config`);
+    assert.deepEqual(await config.json(), { configured: false, paused: true, testMode: true });
+    const response = await fetch(`${base}/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    assert.equal(response.status, 503);
+    assert.equal((await response.json()).error, 'Checkout is paused. You can keep browsing and your bag is saved.');
+  } finally { process.env.CHECKOUT_ENABLED = 'true'; }
 });
 test('checkout refuses a foreign origin', async () => {
   const response = await fetch(`${base}/checkout`, { method: 'POST', headers: { Origin: 'https://attacker.example', 'Content-Type': 'application/json' }, body: '{}' });

@@ -1,5 +1,10 @@
 # Cosmic Beans test checkout
 
+**User decision: keep KWD and pause checkout.** Checkout is disabled by default
+and explicitly paused with `CHECKOUT_ENABLED=false`. Do not reactivate it as part
+of routine setup or verification. A later user request and a KWD-capable Stripe
+account are required before setting `CHECKOUT_ENABLED=true`.
+
 The storefront stays usable when payment credentials are absent. Checkout must
 remain in test mode until a merchant account, fulfillment, shipping fees and
 policies have been finalized.

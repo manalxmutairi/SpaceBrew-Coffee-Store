@@ -33,7 +33,8 @@ function failed(res: Response, error: unknown) {
 
 app.get('/api/payments/config', (_req, res) => {
   const names = ['STRIPE_SECRET_KEY', 'SUPABASE_DATABASE_URL', 'SITE_URL', 'VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY'];
-  res.json({ configured: names.every((name) => Boolean(process.env[name])), testMode: true });
+  const paused = process.env.CHECKOUT_ENABLED !== 'true';
+  res.json({ configured: !paused && names.every((name) => Boolean(process.env[name])), paused, testMode: true });
 });
 
 // Raw bytes are required for Stripe signature verification; keep before JSON.
@@ -56,6 +57,10 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json', limit:
 
 app.use(express.json({ limit: '16kb' }));
 app.post('/api/payments/checkout', async (req, res): Promise<void> => {
+  if (process.env.CHECKOUT_ENABLED !== 'true') {
+    res.status(503).json({ error: 'Checkout is paused. You can keep browsing and your bag is saved.' });
+    return;
+  }
   try {
     const origin = req.headers.origin;
     if (!origin || origin !== getSiteUrl()) {
