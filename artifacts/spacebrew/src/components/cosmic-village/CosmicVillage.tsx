@@ -108,6 +108,7 @@ function CosmicVillage() {
   const cartProducts = products.filter((product) => cart[product.id]);
   const subtotal = cartProducts.reduce((sum, product) => sum + product.price * cart[product.id], 0);
   useEffect(() => {
+    if (!supabase) return;
     let active = true;
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (active) setUser(session?.user ?? null);

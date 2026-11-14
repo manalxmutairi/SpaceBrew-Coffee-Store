@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { supabase } from '@/lib/supabase';
+import { supabase, accountConfigurationError } from '@/lib/supabase';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 type AccountDialogProps = {
@@ -53,6 +53,7 @@ export default function AccountDialog({
     setErrorMessage('');
 
     try {
+      if (!supabase) throw new Error(accountConfigurationError!);
       if (mode === 'signup') {
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
@@ -90,6 +91,7 @@ export default function AccountDialog({
     setBusy(true);
     setErrorMessage('');
     try {
+      if (!supabase) throw new Error(accountConfigurationError!);
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       onOpenChange(false);
@@ -174,6 +176,7 @@ export default function AccountDialog({
               </button>
             </div>
 
+            {accountConfigurationError && <p className="account-error" role="alert">{accountConfigurationError}</p>}
             <Form {...form}>
             <form className="account-form" onSubmit={form.handleSubmit(handleSubmit)}>
               <FormField control={form.control} name="email" rules={{ required: 'Enter your email address.', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address.' } }} render={({ field }) => (
@@ -195,7 +198,7 @@ export default function AccountDialog({
               <button
                 type="submit"
                 className="account-submit"
-                disabled={busy}
+                disabled={busy || !supabase}
                 data-testid="button-account-submit"
               >
                 {busy ? (
