@@ -4,8 +4,9 @@
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist/public",
   "functions": {
-    "api/payments.ts": {
-      "maxDuration": 60
+    "api/payments.mjs": {
+      "maxDuration": 60,
+      "includeFiles": "dist/payments/**"
     }
   },
   "rewrites": [

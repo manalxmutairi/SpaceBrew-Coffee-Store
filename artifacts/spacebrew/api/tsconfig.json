@@ -2,8 +2,10 @@
   "extends": "../tsconfig.server.json",
   "compilerOptions": {
     "noEmit": false,
-    "incremental": false
+    "incremental": false,
+    "rootDir": "..",
+    "outDir": "../dist/payments"
   },
-  "include": ["./**/*.ts", "../server/**/*.ts"],
+  "include": ["../server/payments-app.ts"],
   "exclude": ["../server/**/*.test.ts"]
 }

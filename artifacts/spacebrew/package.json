@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
-    "build": "pnpm run typecheck:server && vite build --config vite.config.ts",
+    "build": "pnpm run build:payments && vite build --config vite.config.ts",
+    "build:payments": "tsc -p api/tsconfig.json",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.server.json --noEmit",
     "typecheck:server": "tsc -p api/tsconfig.json --noEmit",
-    "test:payments": "tsx --test server/payments.test.ts",
+    "test:payments": "pnpm run build:payments && tsx --test server/payments.test.ts && node --test server/payments-build.test.mjs",
     "setup:payments": "tsx server/setup.ts"
   },
   "devDependencies": {

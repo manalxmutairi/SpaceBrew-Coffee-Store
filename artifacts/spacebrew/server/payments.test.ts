@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import type { Server } from 'node:http';
-import app from '../api/payments.js';
+import app from './payments-app.js';
 import { catalog, priceLookupKey, validateCart } from './catalog.js';
 import { databaseTls, formatDatabaseUrl } from './database-config.js';
 import { formatStripeAmount, kwdFilsToUsdCents } from '../src/lib/checkout-pricing.js';

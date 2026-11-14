@@ -13,6 +13,10 @@ policies have been finalized.
 ## What is prepared
 
 - Vercel Node function at `/api/payments`, separate from the static Vite build.
+- A JavaScript API adapter backed by strictly compiled TypeScript. The normal
+  build emits the backend into `dist/payments`, which the function explicitly
+  includes. This avoids a second, incompatible Vercel TypeScript pass without
+  disabling application type checks.
 - Verified Supabase authentication before checkout or order access.
 - Server-controlled catalog, KWD display amounts converted to USD cents, quantity limits, and checkout
   idempotency.
@@ -93,6 +97,8 @@ production domain rather than a new per-deployment preview URL.
 
 `pnpm run typecheck` checks both browser and server code.
 `pnpm run test:payments` covers cart validation and safe unconfigured API behavior.
+It also builds the backend and runs plain-Node checks against the actual
+JavaScript serverless entry, without a TypeScript runtime loader.
 `pnpm run build` builds the static storefront without payment credentials.
 
 These checks do not constitute a successful Stripe payment or a live webhook test.
