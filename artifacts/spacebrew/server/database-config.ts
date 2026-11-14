@@ -1,4 +1,4 @@
-import { supabaseRootCertificate } from './supabase-certificate';
+import { supabaseRootCertificate } from './supabase-certificate.js';
 
 export const databaseTls = { ca: supabaseRootCertificate, rejectUnauthorized: true } as const;
 

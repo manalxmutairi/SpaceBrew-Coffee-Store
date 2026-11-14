@@ -1,4 +1,4 @@
-import { CHECKOUT_PRICE_VERSION } from '../src/lib/checkout-pricing';
+import { CHECKOUT_PRICE_VERSION } from '../src/lib/checkout-pricing.js';
 
 // Server-owned prices: never accept an amount or currency from the browser.
 export const catalog = [

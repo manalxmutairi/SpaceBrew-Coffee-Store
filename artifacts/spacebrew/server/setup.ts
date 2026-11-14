@@ -1,6 +1,6 @@
-import { catalog, priceLookupKey } from './catalog';
-import { getStripeClient, getStripeSync } from './stripe';
-import { CHECKOUT_CURRENCY, kwdFilsToUsdCents } from '../src/lib/checkout-pricing';
+import { catalog, priceLookupKey } from './catalog.js';
+import { getStripeClient, getStripeSync } from './stripe.js';
+import { CHECKOUT_CURRENCY, kwdFilsToUsdCents } from '../src/lib/checkout-pricing.js';
 
 // Run explicitly after secure Vercel/test configuration is supplied.
 // Never imported by Vite or called automatically while browsing.

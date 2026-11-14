@@ -3,6 +3,9 @@
   "compilerOptions": {
     "noEmit": true,
     "incremental": false,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
     "types": ["node"],
     "lib": ["es2022", "dom"]
   },

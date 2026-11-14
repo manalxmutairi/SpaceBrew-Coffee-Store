@@ -1,3 +1,4 @@
 - [Cosmic Beans visual direction](cosmic-beans-visual-direction.md) — use real product photos, avoid AI-looking renders, and keep the storefront cozy and village-inspired.
 - [Customer account provider](customer-account-provider.md) — reuse the existing Supabase Auth setup for customer accounts rather than introducing Clerk.
 - [Payment hosting and currency](payment-hosting.md) — use Vercel and Supabase; display KWD but charge USD at the approved fixed rate of US$3.25 per KWD.
+- [Vercel payment validation](vercel-payment-validation.md) — a successful browser build does not validate the backend; check Node ESM compilation and emitted runtime separately.

@@ -1,8 +1,8 @@
 import express, { type Request, type Response, type NextFunction } from 'express';
 import { createClient } from '@supabase/supabase-js';
-import { ConfigurationError, getPool, getSiteUrl, getStripeClient, getStripeSync, requiredSetting } from '../server/stripe';
-import { priceLookupKey, validateCart } from '../server/catalog';
-import { CHECKOUT_CURRENCY, kwdFilsToUsdCents, USD_PER_KWD } from '../src/lib/checkout-pricing';
+import { ConfigurationError, getPool, getSiteUrl, getStripeClient, getStripeSync, requiredSetting } from '../server/stripe.js';
+import { priceLookupKey, validateCart } from '../server/catalog.js';
+import { CHECKOUT_CURRENCY, kwdFilsToUsdCents, USD_PER_KWD } from '../src/lib/checkout-pricing.js';
 
 const app = express();
 app.disable('x-powered-by');

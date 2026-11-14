@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import pg from 'pg';
 import { runMigrations, StripeSync } from 'stripe-replit-sync';
-import { databaseTls, formatDatabaseUrl } from './database-config';
+import { databaseTls, formatDatabaseUrl } from './database-config.js';
 
 export class ConfigurationError extends Error {}
 

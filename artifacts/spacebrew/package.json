@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
-    "build": "vite build --config vite.config.ts",
+    "build": "pnpm run typecheck:server && vite build --config vite.config.ts",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.server.json --noEmit",
+    "typecheck:server": "tsc -p api/tsconfig.json --noEmit",
     "test:payments": "tsx --test server/payments.test.ts",
     "setup:payments": "tsx server/setup.ts"
   },
